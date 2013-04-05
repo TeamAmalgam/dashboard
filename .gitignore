@@ -16,6 +16,7 @@ test/tmp
 test/version_tmp
 tmp
 config/database.yml
+config/aws.yml
 
 # YARD artifacts
 .yardoc
