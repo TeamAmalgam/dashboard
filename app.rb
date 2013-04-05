@@ -22,7 +22,7 @@ get "/models/:id" do
 
   halt 404, "404 - Page not found."  if @model.nil?
 
-  @test_results = @model.test_results.order("time DESC")
+  @test_results = @model.test_results.order("requested_at DESC")
 
   @title = "Amalgam Dashboard - Model #{params[:id]}"
   erb :"model_details"
