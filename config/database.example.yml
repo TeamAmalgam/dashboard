@@ -1,0 +1,6 @@
+development: &non_production_settings
+  name: dbname
+  username: user
+  password: password
+  host: localhost
+  adapter: mysql2
