@@ -21,15 +21,35 @@ class TestResult < ActiveRecord::Base
 
     logger.info "Received result for test #{self.id}, updating records."
 
+    correct = data["correct"] == 1
+    runtime_seconds = data["runtime_seconds"]
+
     self.update_attributes({
       :completed => true,
       :return_code => data["return_code"],
-      :correct => (data["correct"] == 1),
+      :correct => correct,
       :started_at => Time.parse(data["started_at"]),
-      :runtime_seconds => data["runtime_seconds"],
+      :runtime_seconds => runtime_seconds,
       :tarball_s3_key => data["tarball_s3_key"]
     })
 
     self.save
+
+    TestResult.notify_hipchat(self.id, self.model.friendly_name, runtime_seconds, correct)
   end
+
+
+  def self.notify_hipchat(id, name, time, correct)
+    key = hipchat_access_key #TODO
+    room = hipchat_room #TODO
+
+    colour = correct ? "green" : "red"
+    result = correct ? "success" : "fail"
+
+    message = "Test run #{id} completed with result #{result}. Model #{name} ran in #{time} seconds."
+
+    client = HipChat::Client.new(key)
+    client[room].send("Dashboard", message, :color => colour)
+  end
+
 end

@@ -5,10 +5,13 @@ require "sinatra/activerecord"
 require "sinatra/config_file"
 require "sinatra/link_header"
 require "aws-sdk"
+require "hipchat"
 
+require "./helpers/init.rb"
 require "./models/init.rb"
 
 config_file "config/aws.yml"
+config_file "config/hipchat.yml"
 
 get "/" do
   @title = "Amalgam Dashboard"

@@ -22,9 +22,15 @@ GEM
     builder (3.0.4)
     daemons (1.1.9)
     eventmachine (1.0.3)
+    hipchat (0.8.0)
+      httparty
+    httparty (0.10.2)
+      multi_json (~> 1.0)
+      multi_xml (>= 0.5.2)
     i18n (0.6.1)
     json (1.7.7)
     multi_json (1.7.2)
+    multi_xml (0.5.3)
     mysql2 (0.3.11)
     nokogiri (1.5.9)
     rack (1.5.2)
@@ -76,6 +82,7 @@ PLATFORMS
 DEPENDENCIES
   activerecord
   aws-sdk
+  hipchat
   mysql2
   rake
   shotgun

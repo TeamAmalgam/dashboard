@@ -1,0 +1,3 @@
+development:
+  hipchat_access_key: HIPCHAT_API_KEY
+  hipchat_room: HIPCHAT_ROOM

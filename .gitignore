@@ -17,6 +17,7 @@ test/version_tmp
 tmp
 config/database.yml
 config/aws.yml
+config/hipchat.yml
 
 # YARD artifacts
 .yardoc
