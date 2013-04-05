@@ -1,5 +1,13 @@
-source 'https://rubygems.org'
-gem 'sinatra'
+source "https://rubygems.org"
 
-# other dependencies
-#gem 'activerecord', '~> 3.0'
+gem "sinatra"
+
+gem "activerecord"
+gem "sinatra-activerecord"
+gem "sinatra-contrib"
+gem "thin"
+
+group :development do
+  gem "shotgun"
+  gem "tux"
+end
