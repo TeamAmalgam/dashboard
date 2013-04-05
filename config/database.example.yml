@@ -1,5 +1,5 @@
 development: &non_production_settings
-  name: dbname
+  database: dbname
   username: user
   password: password
   host: localhost

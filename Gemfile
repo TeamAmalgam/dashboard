@@ -7,6 +7,7 @@ gem "sinatra-activerecord"
 gem "sinatra-contrib"
 gem "thin"
 gem "mysql2"
+gem "rake"
 
 group :development do
   gem "shotgun"
