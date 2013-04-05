@@ -3,6 +3,8 @@
 require "sinatra"
 require "sinatra/activerecord"
 
+require "./models/init.rb"
+
 get "/" do
   "Hello World"
 end
