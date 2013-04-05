@@ -2,10 +2,13 @@
 
 require "sinatra"
 require "sinatra/activerecord"
+require "sinatra/config_file"
 require "sinatra/link_header"
 require "aws-sdk"
 
 require "./models/init.rb"
+
+config_file "config/aws.yml"
 
 get "/" do
   @title = "Amalgam Dashboard"

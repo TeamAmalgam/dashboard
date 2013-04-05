@@ -1,0 +1,6 @@
+development:
+  aws_access_key_id: ACCESS_KEY_ID
+  aws_secret_access_key: SECRET_ACCESS_KEY
+  correctness_sqs_queue: CORRECTNESS_QUEUE_NAME
+  performance_sqs_queue: PERFORMNACE_QUEUE_NAME
+  s3_bucket: BUCKET_NAME
