@@ -2,6 +2,7 @@
 
 require "sinatra"
 require "sinatra/activerecord"
+require "aws-sdk"
 
 require "./models/init.rb"
 
