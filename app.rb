@@ -32,5 +32,14 @@ post "/models/:id/run" do
 end
 
 post "/result" do
-  "Expecting some sort of POST body"
+  request.body.rewind  # in case someone already read it
+  data = JSON.parse request.body.read
+
+  # Find the TestResult associated with the response
+  result = TestResult.find(data["test_id"])
+
+  # Pass the data to the model and let it handle the rest
+  result.test_completed data
+
+  "OK"
 end
