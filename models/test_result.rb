@@ -35,11 +35,12 @@ class TestResult < ActiveRecord::Base
 
     self.save
 
-    TestResult.notify_hipchat(self.id, self.model.friendly_name, runtime_seconds, correct)
+    TestResult.notify_hipchat!(self.id, self.model.friendly_name, runtime_seconds, correct)
   end
 
+private
 
-  def self.notify_hipchat(id, name, time, correct)
+  def self.notify_hipchat!(id, name, time, correct)
     key = hipchat_access_key #TODO
     room = hipchat_room #TODO
 

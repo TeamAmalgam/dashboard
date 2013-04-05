@@ -7,8 +7,8 @@ require "sinatra/link_header"
 require "aws-sdk"
 require "hipchat"
 
-require "./helpers/init.rb"
-require "./models/init.rb"
+require_relative "helpers/init"
+require_relative "models/init"
 
 config_file "config/aws.yml"
 config_file "config/hipchat.yml"
