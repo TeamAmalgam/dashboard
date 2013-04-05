@@ -1,0 +1,19 @@
+<table>
+  <tr>
+    <td>Model Name</td>
+    <td>Model Filepath</td>
+    <td></td>
+  </tr>
+  <% @models.each do |model| %>
+  <tr>
+    <td><%= model.friendly_name %></td>
+    <td><%= model.filepath %></td>
+    <td>
+      <a href="/models/<%= model.id %>">Details</a>
+      <form action="/models/<%= model.id %>/run" method="POST">
+        <input type="submit" value="Run"/>
+      </form>
+    </td>
+  </tr>
+  <% end %>
+</table>
