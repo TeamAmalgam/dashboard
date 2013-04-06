@@ -78,6 +78,8 @@ post "/models/:id/run" do
 end
 
 post "/result" do
+  protected! if settings.production?
+
   request.body.rewind  # in case someone already read it
   data = JSON.parse request.body.read
 
