@@ -5,6 +5,9 @@ class TestResult < ActiveRecord::Base
   validates_presence_of :test_type
   validates :completed, :inclusion => { :in => [true, false] }
 
+  cattr_accessor :hipchat_client
+  cattr_accessor :hipchat_room
+
   def completed?; self.completed; end
   def pending?;  !self.completed; end
 
@@ -41,15 +44,14 @@ class TestResult < ActiveRecord::Base
 private
 
   def self.notify_hipchat!(id, name, time, correct)
-    key = hipchat_access_key #TODO
-    room = hipchat_room #TODO
+    client = @@hipchat_client
+    room = @@hipchat_room
 
     colour = correct ? "green" : "red"
     result = correct ? "success" : "fail"
 
     message = "Test run #{id} completed with result #{result}. Model #{name} ran in #{time} seconds."
 
-    client = HipChat::Client.new(key)
     client[room].send("Dashboard", message, :color => colour)
   end
 

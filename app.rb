@@ -13,6 +13,9 @@ require_relative "models/init"
 config_file "config/aws.yml"
 config_file "config/hipchat.yml"
 
+TestResult.hipchat_client = HipChat::Client.new(settings.hipchat_access_key)
+TestResult.hipchat_room = settings.hipchat_room
+
 get "/" do
   @title = "Amalgam Dashboard"
   erb :"index"
