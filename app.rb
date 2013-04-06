@@ -37,7 +37,7 @@ get "/" do
 end
 
 get "/models" do
-  @title = "Amalgam Dashboard - Model List"
+  @title = "Amalgam Dashboard - Models"
   @models = Model.order("filepath")
   erb :"models_list"
 end
@@ -49,7 +49,7 @@ get "/models/:id" do
 
   @test_results = @model.test_results.order("requested_at DESC")
 
-  @title = "Amalgam Dashboard - Model #{params[:id]}"
+  @title = "Amalgam Dashboard - Models - #{@model.friendly_name}"
   erb :"model_details"
 end
 

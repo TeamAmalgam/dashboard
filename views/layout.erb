@@ -1,15 +1,39 @@
+<!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
     <title><%= @title %></title>
-    <%= stylesheet "/dashboard.css" %>
+    <%= stylesheet "/css/bootstrap.min.css" %>
+    <%= stylesheet "/css/bootstrap-fileupload.min.css" %>
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+    </style>
   </head>
+
   <body>
-    <h1>Amalgam Dashboard</h1>
-    <ul>
-      <li><a href="/">Home</a></li>
-      <li><a href="/models">Models</a></li>
-    </ul>
-    <%= yield %>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">Amalgam Dashboard</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li><a href="/models">Models</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <%= yield %>
+    </div>
+
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/bootstrap-fileupload.js"></script>
+
   </body>
 </html>
 

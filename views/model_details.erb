@@ -1,63 +1,72 @@
-<h2><%= @model.friendly_name %></h2>
-<table>
+<ul class="breadcrumb">
+  <li><a href="/">Home</a> <span class="divider">/</span></li>
+  <li><a href="/models">Models</a> <span class="divider">/</span></li>
+  <li class="active"><%= @model.friendly_name %></li>
+</ul>
+
+<h1><%= @model.friendly_name %></h1>
+<table class="table">
   <tr>
-    <td>Filepath:</td>
+    <td width="15%"><strong>Filepath</strong></td>
     <td><%= @model.filepath %></td>
   </tr>
   <tr>
-    <td>Model File:</td>
+    <td><strong>Tarball</strong></td>
     <td>
       <% s3_link = @model.s3_link %>
       <% if s3_link.nil? %>
         &nbsp;
       <% else %>
-      <a href="<%= s3_link %>">link</a>
+        <a href="<%= s3_link %>">link</a>
       <% end %>
     </td>
   </tr>
   <tr>
-    <td>Upload Model:</td>
+    <td><strong>Upload</strong></td>
     <td>
-      <form action="/models/<%= @model.id %>/upload" method="POST" enctype="multipart/form-data">
-        <input type="file" name="file"/>
-        <input type="submit" value="Upload"/>
+      <form action="/models/<%= @model.id %>/upload" method="POST" enctype="multipart/form-data" style="margin-bottom:0">
+        <div class="fileupload fileupload-new" data-provides="fileupload" style="margin-bottom:0">
+          <div class="input-append" style="margin-bottom:0">
+            <div class="uneditable-input span3"><i class="icon-file fileupload-exists"></i> <span class="fileupload-preview"></span></div><span class="btn btn-file"><span class="fileupload-new">Select file</span><span class="fileupload-exists">Change</span><input type="file" name="file" /></span><a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+            <button class="btn btn-primary" type="submit">Upload</button>
+          </div>
+        </div>
       </form>
     </td>
   <tr>
-    <td colspan='2'>
+    <td><strong>Request Test</strong></td>
+    <td>
       <form action="/models/<%= @model.id %>/run" method="POST">
         <input type="hidden" name="test_type" value="CORRECTNESS"/>
-        <input type="submit" value="Run"/>
+        <button class="btn" type="submit">Run</button>
       </form>
     </td>
   </tr>
 </table>
+
+
 <h3>Test Runs</h3>
-<table>
-  <tr>
-    <td>&nbsp;</td>
-    <td>Requested At</td>
-    <td>Started At</td>
-    <td>Return</td>
-    <td>Runtime</td>
-    <td>Tarball Link</td>
-  </tr>
+<table class="table table-hover table-condensed">
+  <thead>
+    <tr>
+      <th>&nbsp;</th>
+      <th>Requested At</th>
+      <th>Started At</th>
+      <th>Return Code</th>
+      <th>Duration</th>
+      <th>Tarball Link</th>
+    </tr>
+  </thead>
 
   <% @test_results.each do |test_result| %>
-    <tr>
+    <tr class="<%= test_result.row_class %>">
       <td>
-        <% if test_result.pending? %>
-          ?
-        <% elsif test_result.correct? %>
-          Y
-        <% else %>
-          N
-        <% end %>
+        <i class="<%= test_result.icon %>"></i>
       </td>
-      <td><%= test_result.requested_at %></td>
-      <td><%= test_result.started_at %></td>
+      <td><%= pretty_timestamp test_result.requested_at %></td>
+      <td><%= pretty_timestamp test_result.started_at %></td>
       <td><%= test_result.return_code %></td>
-      <td><%= test_result.runtime_seconds %></td>
+      <td><%= pretty_duration test_result.runtime_seconds %></td>
       <td>
         <% s3_link = test_result.tarball_s3_link %>
         <% if s3_link.nil? %>

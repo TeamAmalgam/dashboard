@@ -14,4 +14,22 @@ helpers do
     @auth.provided? && @auth.basic? && @auth.credentials && @auth.credentials == [username, password]
   end
 
+  def pretty_timestamp(timestamp)
+    return nil if timestamp.nil?
+
+    return timestamp.strftime("%R") if timestamp.today?
+    return timestamp.strftime("%B %e at %R") if timestamp.year == Time.now.year
+    timestamp.strftime("%B %e %G at %R")
+  end
+
+  def pretty_duration(total_seconds)
+    return nil if total_seconds.nil?
+
+    seconds = total_seconds % 60
+    minutes = (total_seconds / 60) % 60
+    hours = total_seconds / (60 * 60)
+
+    format("%02d:%02d:%02d", hours, minutes, seconds)
+  end
+
 end
