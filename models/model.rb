@@ -16,7 +16,7 @@ class Model < ActiveRecord::Base
     return nil if self.s3_key.nil?
     
     obj = @@s3_bucket.objects[self.s3_key]
-    obj.url_for(:read, :secure => true, :expires => 24 * 60 * 60)
+    obj.url_for(:read, :secure => true, :expires => 24.hours.to_i)
   end
 
   def run_test(test_type)

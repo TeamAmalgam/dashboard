@@ -4,9 +4,10 @@ require "sinatra"
 require "sinatra/activerecord"
 require "sinatra/config_file"
 require "sinatra/link_header"
+
+require "acts_as_singleton"
 require "aws-sdk"
 require "hipchat"
-require "acts_as_singleton"
 
 require_relative "helpers/init"
 require_relative "models/init"
@@ -37,14 +38,14 @@ end
 
 get "/models" do
   @title = "Amalgam Dashboard - Model List"
-  @models = Model.all
+  @models = Model.order("filepath")
   erb :"models_list"
 end
 
 get "/models/:id" do
   @model = Model.where(:id => params[:id]).first
 
-  halt 404, "404 - Page not found."  if @model.nil?
+  halt 404, "404 - Page not found." if @model.nil?
 
   @test_results = @model.test_results.order("requested_at DESC")
 

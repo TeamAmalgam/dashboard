@@ -20,7 +20,7 @@
 <h3>Test Runs</h3>
 <table>
   <tr>
-    <td>&nbsp</td>
+    <td>&nbsp;</td>
     <td>Requested At</td>
     <td>Started At</td>
     <td>Return</td>
@@ -31,7 +31,7 @@
   <% @test_results.each do |test_result| %>
     <tr>
       <td>
-        <% if !test_result.completed? %>
+        <% if test_result.pending? %>
           ?
         <% elsif test_result.correct? %>
           Y
