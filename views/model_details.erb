@@ -6,7 +6,14 @@
   </tr>
   <tr>
     <td>Model File:</td>
-    <td><a href="<%= @model.s3_link %>"><%= @model.s3_link %></a></td>
+    <td>
+      <% s3_link = @model.s3_link %>
+      <% if s3_link.nil? %>
+        &nbsp;
+      <% else %>
+      <a href="<%= s3_link %>">link</a>
+      <% end %>
+    </td>
   </tr>
   <tr>
     <td>Upload Model:</td>
@@ -51,7 +58,14 @@
       <td><%= test_result.started_at %></td>
       <td><%= test_result.return_code %></td>
       <td><%= test_result.runtime_seconds %></td>
-      <td><%= test_result.tarball_s3_link %></td>
+      <td>
+        <% s3_link = test_result.tarball_s3_link %>
+        <% if s3_link.nil? %>
+          &nbsp;
+        <% else %>
+          <a href="<%= s3_link %>">link</a>
+        <% end %>
+      </td>
     </tr>
   <% end %>
 </table>

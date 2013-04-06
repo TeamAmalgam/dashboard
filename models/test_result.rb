@@ -21,7 +21,10 @@ class TestResult < ActiveRecord::Base
   def pending?;  !self.completed; end
 
   def tarball_s3_link
+    return nil if self.tarball_s3_key.nil?
 
+    obj = @@s3_bucket.objects[self.tarball_s3_key]
+    obj.url_for(:read, :secure => true, :expires => 24.hours.to_i)
   end
 
   def test_completed(data)
