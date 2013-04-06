@@ -19,6 +19,16 @@ class Model < ActiveRecord::Base
     obj.url_for(:read, :secure => true, :expires => 24.hours.to_i)
   end
 
+  def upload(file_name, file)
+    hash = Digest::SHA2.hexdigest(file_name.to_s + Time.now.to_s).to_s
+    key = "models/#{hash}.tar.gz"
+
+    @@s3_bucket.objects[key].write(file)
+
+    self.s3_key = key
+    self.save!
+  end
+
   def run_test(test_type)
     if test_type == "CORRECTNESS"
       test_type = TestResult::TestTypes::CORRECTNESS
@@ -42,6 +52,9 @@ class Model < ActiveRecord::Base
               when TestResult::TestTypes::PERFORMANCE then @@performance_queue
             end
 
-    queue.send_message(job_description)
+    sent_message = queue.send_message(job_description)
+    
+    test_result.secret_key = sent_message.id
+    test_result.save
   end
 end

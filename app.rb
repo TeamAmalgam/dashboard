@@ -53,6 +53,18 @@ get "/models/:id" do
   erb :"model_details"
 end
 
+post "/models/:id/upload" do
+  protected! if settings.production?
+
+  @model = Model.where(:id => params[:id]).first
+
+  halt 404, "404 - Page not found." if @model.nil?
+
+  @model.upload(params[:file][:filename], params[:file][:tempfile])
+
+  redirect to("/models/#{@model.id}")
+end
+
 post "/models/:id/run" do
   protected! if settings.production?
   

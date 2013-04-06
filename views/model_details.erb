@@ -9,6 +9,14 @@
     <td><a href="<%= @model.s3_link %>"><%= @model.s3_link %></a></td>
   </tr>
   <tr>
+    <td>Upload Model:</td>
+    <td>
+      <form action="/models/<%= @model.id %>/upload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file"/>
+        <input type="submit" value="Upload"/>
+      </form>
+    </td>
+  <tr>
     <td colspan='2'>
       <form action="/models/<%= @model.id %>/run" method="POST">
         <input type="hidden" name="test_type" value="CORRECTNESS"/>
