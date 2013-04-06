@@ -11,6 +11,7 @@
     <td>
       <a href="/models/<%= model.id %>">Details</a>
       <form action="/models/<%= model.id %>/run" method="POST">
+        <input type="hidden" name="test_type" value="CORRECTNESS"/>
         <input type="submit" value="Run"/>
       </form>
     </td>

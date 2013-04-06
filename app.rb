@@ -6,6 +6,7 @@ require "sinatra/config_file"
 require "sinatra/link_header"
 require "aws-sdk"
 require "hipchat"
+require "acts_as_singleton"
 
 require_relative "helpers/init"
 require_relative "models/init"
@@ -13,6 +14,17 @@ require_relative "models/init"
 config_file "config/auth.yml"
 config_file "config/aws.yml"
 config_file "config/hipchat.yml"
+
+AWS.config(:access_key_id => settings.aws_access_key_id,
+           :secret_access_key => settings.aws_secret_access_key)
+
+sqs = AWS::SQS.new
+Model.performance_queue = sqs.queues.named(settings.performance_sqs_queue)
+Model.correctness_queue = sqs.queues.named(settings.correctness_sqs_queue)
+
+s3 = AWS::S3.new
+Model.s3_bucket = s3.buckets[settings.s3_bucket]
+TestResult.s3_bucket = s3.buckets[settings.s3_bucket]
 
 TestResult.hipchat_client = HipChat::Client.new(settings.hipchat_access_key)
 TestResult.hipchat_room = settings.hipchat_room
@@ -41,6 +53,13 @@ end
 
 post "/models/:id/run" do
   protected! if settings.production?
+  
+  @model = Model.where(:id => params[:id]).first
+
+  halt 404, "404 - Page not found." if @model.nil?
+
+  @model.run_test(params[:test_type])
+
   redirect to('/models')
 end
 

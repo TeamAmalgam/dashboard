@@ -1,12 +1,21 @@
 class TestResult < ActiveRecord::Base
   belongs_to :model
+  
+  module TestTypes
+    CORRECTNESS = 0
+    PERFORMANCE = 1 
+
+    VALID_TYPES = (0..1)
+  end
 
   validates_presence_of :requested_at
   validates_presence_of :test_type
+  validates :test_type, :inclusion => { :in => TestTypes::VALID_TYPES }
   validates :completed, :inclusion => { :in => [true, false] }
 
   cattr_accessor :hipchat_client
   cattr_accessor :hipchat_room
+  cattr_accessor :s3_bucket
 
   def completed?; self.completed; end
   def pending?;  !self.completed; end

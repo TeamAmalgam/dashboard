@@ -10,6 +10,7 @@ gem "rake"
 gem "sinatra-activerecord"
 gem "sinatra-contrib"
 gem "thin"
+gem "acts_as_singleton"
 
 group :development do
   gem "shotgun"
