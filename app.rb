@@ -10,6 +10,7 @@ require "hipchat"
 require_relative "helpers/init"
 require_relative "models/init"
 
+config_file "config/auth.yml"
 config_file "config/aws.yml"
 config_file "config/hipchat.yml"
 
@@ -39,6 +40,7 @@ get "/models/:id" do
 end
 
 post "/models/:id/run" do
+  protected! if settings.production?
   redirect to('/models')
 end
 

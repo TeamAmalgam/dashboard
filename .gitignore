@@ -15,8 +15,9 @@ spec/reports
 test/tmp
 test/version_tmp
 tmp
-config/database.yml
+config/auth.yml
 config/aws.yml
+config/database.yml
 config/hipchat.yml
 
 # YARD artifacts
