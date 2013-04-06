@@ -13,6 +13,7 @@ require_relative "models/init"
 
 config_file "config/auth.yml"
 config_file "config/aws.yml"
+config_file "config/git.yml"
 config_file "config/hipchat.yml"
 
 AWS.config(:access_key_id => settings.aws_access_key_id,
@@ -76,4 +77,17 @@ post "/result" do
   result.test_completed data
 
   "OK"
+end
+
+post "/repo/post_commit/#{settings.git_hook_secret}" do
+  request.body.rewind  # in case someone already read it
+  data = JSON.parse request.body.read
+
+  commit = data["after"]
+  repo = Repo.instance
+  repo.head = commit
+  repo.save!
+end
+
+post "/repo/post_commit/:secret" do
 end

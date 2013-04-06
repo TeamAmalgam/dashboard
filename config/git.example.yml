@@ -1,0 +1,2 @@
+development:
+  git_hook_secret: SECRET
