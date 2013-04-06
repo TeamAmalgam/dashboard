@@ -43,6 +43,7 @@ class Model < ActiveRecord::Base
                                            :completed => false)
     job_description = {
       :version => JOB_DESCRIPTION_VERSION,
+      :test_id => test_result.id,
       :commit => Repo.instance.head,
       :model_s3_key => self.s3_key,
     }.to_yaml
