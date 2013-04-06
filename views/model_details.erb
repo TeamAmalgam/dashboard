@@ -20,7 +20,8 @@
 <table>
   <tr>
     <td>&nbsp</td>
-    <td>Time</td> 
+    <td>Requested At</td>
+    <td>Started At</td>
     <td>Return</td>
     <td>Runtime</td>
     <td>Tarball Link</td>
@@ -37,7 +38,8 @@
           N
         <% end %>
       </td>
-      <td><%= test_result.time %></td>
+      <td><%= test_result.requested_at %></td>
+      <td><%= test_result.started_at %></td>
       <td><%= test_result.return_code %></td>
       <td><%= test_result.runtime_seconds %></td>
       <td><%= test_result.tarball_s3_link %></td>

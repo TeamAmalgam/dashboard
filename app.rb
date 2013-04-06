@@ -47,7 +47,9 @@ post "/result" do
   data = JSON.parse request.body.read
 
   # Find the TestResult associated with the response
-  result = TestResult.find(data["test_id"])
+  result = TestResult.where(:id => data["test_id"]).first
+
+  halt 400, "400 - Bad request: submitted test result does not exist" if result.nil?
 
   # Pass the data to the model and let it handle the rest
   result.test_completed data
