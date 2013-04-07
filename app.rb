@@ -23,10 +23,13 @@ set :hipchat_room, ENV['HIPCHAT_ROOM']
 set :auth_username, ENV['AUTH_USERNAME']
 set :auth_password, ENV['AUTH_PASSWORD']
 set :git_hook_secret, ENV['GIT_HOOK_SECRET']
+set :ga_tracking_code, ENV['GA_TRACKING_CODE']
+set :ga_domain, ENV['GA_DOMAIN']
 
 # Read settings from config files if they exist.
 config_file "config/auth.yml"
 config_file "config/aws.yml"
+config_file "config/ga.yml"
 config_file "config/git.yml"
 config_file "config/hipchat.yml"
 

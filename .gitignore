@@ -18,6 +18,7 @@ tmp
 config/auth.yml
 config/aws.yml
 config/database.yml
+config/ga.yml
 config/git.yml
 config/hipchat.yml
 
