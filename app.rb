@@ -16,7 +16,7 @@ require_relative "models/init"
 set :aws_access_key_id, ENV['AWS_ACCESS_KEY_ID']
 set :aws_secret_access_key, ENV['AWS_SECRET_ACCESS_KEY']
 set :performance_sqs_queue, ENV['PERFORMANCE_SQS_QUEUE']
-set :correctness_queue, ENV['CORRECTNESS_SQS_QUEUE']
+set :correctness_sqs_queue, ENV['CORRECTNESS_SQS_QUEUE']
 set :s3_bucket, ENV['S3_BUCKET']
 set :hipchat_access_key, ENV['HIPCHAT_ACCESS_KEY']
 set :hipchat_room, ENV['HIPCHAT_ROOM']
