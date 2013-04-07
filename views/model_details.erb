@@ -131,7 +131,10 @@
          })
          .attr("cy", function(d) {
           return yscale(d.runtime_seconds);
-        })
-        .attr("r", 5);
+         })
+         .attr("r", 5)
+         .attr("class", function(d) {
+           return (d.correct == 1) ? "correct" : "incorrect";
+         });
   }
 </script>

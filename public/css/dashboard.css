@@ -15,3 +15,11 @@
   stroke: steelblue;
   stroke-width: 2;
 }
+
+circle.correct {
+  fill: green;
+}
+
+circle.incorrect {
+  fill: red;
+}
