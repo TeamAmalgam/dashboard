@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title><%= @title %></title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <%= stylesheet "/css/bootstrap.min.css" %>
     <%= stylesheet "/css/bootstrap-fileupload.min.css" %>
     <%= stylesheet "/css/dashboard.css" %>
@@ -37,7 +38,6 @@
       <%= yield %>
     </div>
 
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
     <script src="/js/bootstrap-fileupload.min.js"></script>
     <script src="http://d3js.org/d3.v3.min.js"></script> 
@@ -58,11 +58,6 @@
 
     </script>
     <% end %>
-    <script>
-      if (render_page) {
-        render_page();
-      }
-    </script>
   </body>
 </html>
 

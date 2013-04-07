@@ -73,7 +73,7 @@
 <script>
   test_run_data = <%= test_run_data_array(@model.test_results.where(:completed => true)) %>;
 
-  render_page = function() {
+  $(document).ready(function() {
     var w = 900;
     var h = 320;
     var xpadding = 50;
@@ -136,5 +136,5 @@
          .attr("class", function(d) {
            return (d.correct == 1) ? "correct" : "incorrect";
          });
-  }
+  });
 </script>
