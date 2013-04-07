@@ -115,7 +115,7 @@ helpers do
         index: #{index}, 
         completed: #{result.completed? ? 1 : 0},
         correct: #{result.correct? ? 1 : 0},
-        datetime: new Date("#{result.started_at.to_s}"), 
+        datetime: new Date("#{result.started_at.to_datetime.to_s}"),
         runtime_seconds: #{result.runtime_seconds}
       }
       ENTRY
