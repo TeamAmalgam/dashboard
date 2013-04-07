@@ -18,3 +18,7 @@ group :development do
   gem "shotgun"
   gem "tux"
 end
+
+group :production do
+  gem "pry"   # For running the console remotely; might also be worth running locally
+end

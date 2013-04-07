@@ -19,5 +19,5 @@ end
 desc "Opens a console that loads the Sinatra environment"
 task :console do
   exec 'bundle exec tux' if settings.development?
-  exec 'irb -r "./app"'
+  exec 'pry -r "./app"'
 end
