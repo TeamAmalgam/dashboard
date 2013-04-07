@@ -23,6 +23,7 @@
   <tr>
     <td><strong>Request Test</strong></td>
     <td>
+      <% unless @model.s3_key.nil? %>
       <form action="/models/<%= @model.id %>/run" method="POST" style="margin-bottom:0;display:inline;">
         <input type="hidden" name="test_type" value="CORRECTNESS"/>
         <button class="btn" type="submit">Correctness</button>
@@ -31,6 +32,7 @@
         <input type="hidden" name="test_type" value="PERFORMANCE"/>
         <button class="btn" type="submit">Performance</button>
       </form>
+      <% end %>
     </td>
   </tr>
 </table>
