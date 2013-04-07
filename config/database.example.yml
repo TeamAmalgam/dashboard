@@ -3,4 +3,4 @@ development: &non_production_settings
   username: user
   password: password
   host: localhost
-  adapter: mysql2
+  adapter: postgresql
