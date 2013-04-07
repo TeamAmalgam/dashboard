@@ -106,4 +106,19 @@ helpers do
       .count
   end
 
+  def test_run_data_array(test_results)
+    index = -1 
+    "[\n" + test_results.collect do |result|
+      index += 1
+      entry = <<-ENTRY
+      { 
+        index: #{index}, 
+        completed: #{result.completed? ? 1 : 0},
+        correct: #{result.correct? ? 1 : 0},
+        datetime: new Date("#{result.started_at.to_s}"), 
+        runtime_seconds: #{result.runtime_seconds}
+      }
+      ENTRY
+    end.join(",\n") + "\n]\n"
+  end
 end

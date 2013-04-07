@@ -37,6 +37,9 @@
   </tr>
 </table>
 
+<h3>Runtime Performance</h3>
+<div id="runtime-performance-graph" class="well">
+</div>
 
 <h3>Test Runs</h3>
 <table class="table table-hover table-condensed">
@@ -66,3 +69,69 @@
     </tr>
   <% end %>
 </table>
+
+<script>
+  test_run_data = <%= test_run_data_array(@model.test_results.where(:completed => true)) %>;
+
+  render_page = function() {
+    var w = 900;
+    var h = 320;
+    var xpadding = 50;
+    var ypadding = 20;
+
+    var graph = d3.select("#runtime-performance-graph")
+                  .insert("svg")
+                  .attr("class", "chart")
+                  .attr("width", w)
+                  .attr("height", h);
+    var xmin = d3.min(test_run_data, function(d) { return d.datetime; });
+    var xmax = d3.max(test_run_data, function(d) { return d.datetime; });
+    var ymin = d3.min(test_run_data, function(d) { return d.runtime_seconds; });
+    var ymax = d3.max(test_run_data, function(d) { return d.runtime_seconds; });
+    var xscale = d3.scale.linear()
+                         .domain([xmin, xmax])
+                         .range([xpadding, w - xpadding])
+                         .nice();
+    var yscale = d3.scale.linear()
+                         .domain([0, ymax])
+                         .range([h - ypadding, ypadding])
+                         .nice();
+    var xaxis = d3.svg.axis()
+                      .scale(xscale)
+                      .orient("bottom")
+                      .tickFormat(function(datetime) {
+                        return d3.time.format("%Y-%m-%d")(new Date(datetime));
+                      });
+    var yaxis = d3.svg.axis()
+                      .scale(yscale)
+                      .orient("left");
+    var line = d3.svg.line()
+                     .x(function(d) { return xscale(d.datetime); })
+                     .y(function(d) { return yscale(d.runtime_seconds); });
+    graph.append("g")
+         .classed("axis", true)
+         .attr("transform", "translate(0," + (h - ypadding) + ")")
+         .call(xaxis);
+    graph.append("g")
+         .classed("axis", true)
+         .attr("transform", "translate(" + xpadding + ",0)")
+         .call(yaxis);
+         
+    graph.append("g")
+         .append("path")
+         .classed("connector", true)
+         .attr("d", line(test_run_data));
+
+    graph.selectAll("circle")
+         .data(test_run_data)
+         .enter()
+         .append("circle")
+         .attr("cx", function(d) {
+           return xscale(d.datetime);
+         })
+         .attr("cy", function(d) {
+          return yscale(d.runtime_seconds);
+        })
+        .attr("r", 5);
+  }
+</script>
