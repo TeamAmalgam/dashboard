@@ -44,6 +44,7 @@
   <thead>
     <tr>
       <th>&nbsp;</th>
+      <th>Test Type</th>
       <th>Requested At</th>
       <th>Started At</th>
       <th>Return Code</th>
@@ -56,6 +57,15 @@
     <tr class="<%= test_result.row_class %>">
       <td>
         <i class="<%= test_result.icon %>"></i>
+      </td>
+      <td>
+        <% if test_result.test_type == TestResult::TestTypes::PERFORMANCE %>
+          Performance
+        <% elsif test_result.test_type == TestResult::TestTypes::CORRECTNESS %>
+          Correctness
+        <% else %>
+          Unknown
+        <% end %>
       </td>
       <td><%= pretty_timestamp test_result.requested_at %></td>
       <td><%= pretty_timestamp test_result.started_at %></td>
