@@ -81,4 +81,27 @@ helpers do
     s3_link.nil? ? "&nbsp;" : "<a href='#{s3_link}'>link</a>"
   end
 
+  # Sums the duration of all the most recent completed tests
+  def total_test_time
+    Model.all
+      .map(&:last_completed_test)
+      .reject{|t| t.nil?}
+      .map{|t| t.runtime_seconds}
+      .sum
+  end
+
+  def number_pending_tests
+    Model.all
+      .map(&:last_test)
+      .select{|t| !t.nil? && t.pending?}
+      .count
+  end
+
+  def number_failing_tests
+    Model.all
+      .map(&:last_completed_test)
+      .select{|t| !t.nil? && !t.correct?}
+      .count
+  end
+
 end

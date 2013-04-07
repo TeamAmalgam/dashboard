@@ -1,6 +1,30 @@
 <h1>Summary</h1>
 
-<p>Todo. Put some nice summary graphs and numbers and statuses here.</p>
+<!--<p>Todo. Put some nice summary graphs and numbers and statuses here.</p>-->
+
+<div class="row">
+  <div class="span6 well" style="display:inline;height:250px">
+    <p class="lead text-left">The most recent tests took</p>
+    <div class="text-center" style="font-size:96px;font-weight:500;padding:70px 0 90px">
+      <%= pretty_duration total_test_time %>
+    </div>
+    <p class="lead text-right">to run.</p>
+  </div>
+  <div class="span5" style="display:inline">
+    <div class="span5 well" style="height:95px">
+      <p class="lead text-left">Pending tests:</p>
+      <div class="text-center" style="font-size:72px;font-weight:500">
+        <%= number_pending_tests %>
+      </div>
+    </div>
+    <div class="span5 well" style="height:95px">
+      <p class="lead text-left">Failing tests:</p>
+      <div class="text-center" style="font-size:72px;font-weight:500">
+        <%= number_failing_tests %>
+      </div>
+    </div>
+  </div>
+</div>
 
 <h1>List of Models</h1>
 <table class="table table-hover table-condensed">
