@@ -6,14 +6,7 @@
   </tr>
   <tr>
     <td><strong>Tarball</strong></td>
-    <td>
-      <% s3_link = @model.s3_link %>
-      <% if s3_link.nil? %>
-        &nbsp;
-      <% else %>
-        <a href="<%= s3_link %>">link</a>
-      <% end %>
-    </td>
+    <td><%= model_s3_link @model %></td>
   </tr>
   <tr>
     <td><strong>Upload</strong></td>
@@ -62,27 +55,12 @@
       <td>
         <%= test_result_icon t %>
       </td>
-      <td>
-        <% if t.test_type == TestResult::TestTypes::PERFORMANCE %>
-          Performance
-        <% elsif t.test_type == TestResult::TestTypes::CORRECTNESS %>
-          Correctness
-        <% else %>
-          Unknown
-        <% end %>
-      </td>
+      <td><%= test_type t %></td>
       <td><%= pretty_timestamp t.requested_at %></td>
       <td><%= pretty_timestamp t.started_at %></td>
       <td><%= t.return_code %></td>
       <td><%= pretty_duration t.runtime_seconds %></td>
-      <td>
-        <% s3_link = t.tarball_s3_link %>
-        <% if s3_link.nil? %>
-          &nbsp;
-        <% else %>
-          <a href="<%= s3_link %>">link</a>
-        <% end %>
-      </td>
+      <td><%= test_result_s3_link t %></td>
     </tr>
   <% end %>
 </table>

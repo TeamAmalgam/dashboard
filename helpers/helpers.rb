@@ -54,4 +54,31 @@ helpers do
     "error"
   end
 
+  def test_type(test_result)
+    return nil if test_result.nil?
+
+    case test_result.test_type
+    when TestResult::TestTypes::PERFORMANCE
+      "Performance"
+    when TestResult::TestTypes::CORRECTNESS
+      "Correctness"
+    else
+      "Unknown"
+    end
+  end
+
+  def test_result_s3_link test_result
+    return if test_result.nil?
+
+    s3_link = test_result.tarball_s3_link
+    s3_link.nil? ? "&nbsp;" : "<a href='#{s3_link}'>link</a>"
+  end
+
+  def model_s3_link model
+    return if model.nil?
+
+    s3_link = model.s3_link
+    s3_link.nil? ? "&nbsp;" : "<a href='#{s3_link}'>link</a>"
+  end
+
 end
