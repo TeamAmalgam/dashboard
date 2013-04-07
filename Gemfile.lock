@@ -33,8 +33,8 @@ GEM
     json (1.7.7)
     multi_json (1.7.2)
     multi_xml (0.5.3)
-    mysql2 (0.3.11)
     nokogiri (1.5.9)
+    pg (0.15.0)
     rack (1.5.2)
     rack-protection (1.5.0)
       rack
@@ -86,7 +86,7 @@ DEPENDENCIES
   acts_as_singleton
   aws-sdk
   hipchat
-  mysql2
+  pg
   rake
   shotgun
   sinatra
