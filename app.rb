@@ -12,6 +12,18 @@ require "hipchat"
 require_relative "helpers/init"
 require_relative "models/init"
 
+# Configure settings from environment variables.
+set :aws_access_key_id, ENV['AWS_ACCESS_KEY_ID']
+set :aws_secret_access_key, ENV['AWS_SECRET_ACCESS_KEY']
+set :performance_sqs_queue, ENV['PERFORMANCE_SQS_QUEUE']
+set :correctness_queue, ENV['CORRECTNESS_SQS_QUEUE']
+set :s3_bucket, ENV['S3_BUCKET']
+set :hipchat_access_key, ENV['HIPCHAT_ACCESS_KEY']
+set :hipchat_room, ENV['HIPCHAT_ROOM']
+set :auth_username, ENV['AUTH_USERNAME']
+set :auth_password, ENV['AUTH_PASSWORD']
+
+# Read settings from config files if they exist.
 config_file "config/auth.yml"
 config_file "config/aws.yml"
 config_file "config/git.yml"
