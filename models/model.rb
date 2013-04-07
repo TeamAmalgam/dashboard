@@ -52,6 +52,8 @@ class Model < ActiveRecord::Base
       raise "Invalid Test Type."
     end
 
+    raise "No model uploaded." unless self.s3_key
+
     test_result = self.test_results.create(:requested_at => DateTime.now,
                                            :test_type => test_type,
                                            :completed => false)
