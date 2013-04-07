@@ -20,18 +20,6 @@ class TestResult < ActiveRecord::Base
   def completed?; self.completed; end
   def pending?;  !self.completed; end
 
-  def icon
-    return "icon-question-sign" if self.pending?
-    return "icon-ok" if self.correct?
-    "icon-remove"
-  end
-
-  def row_class
-    return "warning" if self.pending?
-    return "success" if self.correct?
-    "error"
-  end
-
   def tarball_s3_link
     return nil if self.tarball_s3_key.nil?
 

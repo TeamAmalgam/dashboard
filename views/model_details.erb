@@ -57,26 +57,26 @@
     </tr>
   </thead>
 
-  <% @test_results.each do |test_result| %>
-    <tr class="<%= test_result.row_class %>">
+  <% @test_results.each do |t| %>
+    <tr class="<%= test_result_row_class t %>">
       <td>
-        <i class="<%= test_result.icon %>"></i>
+        <%= test_result_icon t %>
       </td>
       <td>
-        <% if test_result.test_type == TestResult::TestTypes::PERFORMANCE %>
+        <% if t.test_type == TestResult::TestTypes::PERFORMANCE %>
           Performance
-        <% elsif test_result.test_type == TestResult::TestTypes::CORRECTNESS %>
+        <% elsif t.test_type == TestResult::TestTypes::CORRECTNESS %>
           Correctness
         <% else %>
           Unknown
         <% end %>
       </td>
-      <td><%= pretty_timestamp test_result.requested_at %></td>
-      <td><%= pretty_timestamp test_result.started_at %></td>
-      <td><%= test_result.return_code %></td>
-      <td><%= pretty_duration test_result.runtime_seconds %></td>
+      <td><%= pretty_timestamp t.requested_at %></td>
+      <td><%= pretty_timestamp t.started_at %></td>
+      <td><%= t.return_code %></td>
+      <td><%= pretty_duration t.runtime_seconds %></td>
       <td>
-        <% s3_link = test_result.tarball_s3_link %>
+        <% s3_link = t.tarball_s3_link %>
         <% if s3_link.nil? %>
           &nbsp;
         <% else %>

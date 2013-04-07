@@ -3,20 +3,28 @@
 <p>Todo. Put some nice summary graphs and numbers and statuses here.</p>
 
 <h1>List of Models</h1>
-<table class="table table-striped table-bordered table-condensed">
+<table class="table table-hover table-condensed">
   <thead>
     <tr>
-      <th>Model Name</th>
-      <th>Model Filepath</th>
-      <th width="15%">Request Test</th>
+      <th width="15px">&nbsp;</th>
+      <th>Model</th>
+      <th>Last Test Duration</th>
+      <th>Request Test</th>
     </tr>
   </thead>
   <tbody>
   <% @models.each do |model| %>
-    <tr>
+    <tr class="<%= test_result_row_class model.last_test %>">
       <td>
-        <a href="/models/<%= model.id %>"><%= model.friendly_name %></a></td>
-      <td><%= model.filepath %></td>
+        <%= test_result_icon model.last_test %>
+      </td>
+      <td>
+        <a href="/models/<%= model.id %>"><%= model.filepath %></a>
+      </td>
+      <td>
+        <% duration = model.last_completed_test ? model.last_completed_test.runtime_seconds : nil %>
+        <%= pretty_duration duration %>
+      </td>
       <td>
         <form action="/models/<%= model.id %>/run" method="POST" style="margin:-5px 0 -10px">
           <input type="hidden" name="test_type" value="CORRECTNESS"/>

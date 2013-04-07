@@ -32,4 +32,26 @@ helpers do
     format("%02d:%02d:%02d", hours, minutes, seconds)
   end
 
+  def test_result_icon(test_result)
+    return nil if test_result.nil?
+
+    string = '<i data-toggle="tooltip" data-placement="left" class="'
+    string +=
+      if test_result.pending? then
+        'icon-question-sign" title="Pending"></i>'
+      elsif test_result.correct? then
+        'icon-ok" title="Correct"></i>'
+      else
+        'icon-remove" title="Failed"></i>'
+    end
+  end
+
+  def test_result_row_class(test_result)
+    return nil if test_result.nil?
+
+    return "warning" if test_result.pending?
+    return "success" if test_result.correct?
+    "error"
+  end
+
 end

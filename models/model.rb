@@ -7,7 +7,7 @@ class Model < ActiveRecord::Base
   cattr_accessor :s3_bucket
   cattr_accessor :performance_queue
   cattr_accessor :correctness_queue
-  
+
   def friendly_name
     File.basename(self.filepath)
   end
@@ -17,6 +17,14 @@ class Model < ActiveRecord::Base
     
     obj = @@s3_bucket.objects[self.s3_key]
     obj.url_for(:read, :secure => true, :expires => 24.hours.to_i)
+  end
+
+  def last_test
+    TestResult.where(:model_id => self.id).order("requested_at DESC").first
+  end
+
+  def last_completed_test
+    TestResult.where(:model_id => self.id).where(:completed => true).order("requested_at DESC").first
   end
 
   def upload(file_name, file)
