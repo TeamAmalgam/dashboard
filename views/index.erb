@@ -18,9 +18,13 @@
         <a href="/models/<%= model.id %>"><%= model.friendly_name %></a></td>
       <td><%= model.filepath %></td>
       <td>
-        <form action="/models/<%= model.id %>/run" method="POST">
+        <form action="/models/<%= model.id %>/run" method="POST" style="margin:-5px 0 -10px">
           <input type="hidden" name="test_type" value="CORRECTNESS"/>
-          <button type="submit" class="btn btn-link">Submit</button>
+          <button type="submit" class="btn btn-link">Correctness</button>
+        </form>
+        <form action="/models/<%= model.id %>/run" method="POST" style="margin:0 0 -5px">
+          <input type="hidden" name="test_type" value="PERFORMANCE"/>
+          <button type="submit" class="btn btn-link">Performance</button>
         </form>
       </td>
     </tr>
