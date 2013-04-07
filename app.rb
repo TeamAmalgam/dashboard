@@ -22,6 +22,7 @@ set :hipchat_access_key, ENV['HIPCHAT_ACCESS_KEY']
 set :hipchat_room, ENV['HIPCHAT_ROOM']
 set :auth_username, ENV['AUTH_USERNAME']
 set :auth_password, ENV['AUTH_PASSWORD']
+set :git_hook_secret, ENV['GIT_HOOK_SECRET']
 
 # Read settings from config files if they exist.
 config_file "config/auth.yml"
