@@ -20,10 +20,16 @@ class Model < ActiveRecord::Base
   end
 
   def upload(file_name, file)
+    logger.info "Received request to upload file for model #{self.id}"
+
     hash = Digest::SHA2.hexdigest(file_name.to_s + Time.now.to_s).to_s
     key = "models/#{hash}.tar.gz"
 
+    logger.info "Attempting to upload file to S3"
+
     @@s3_bucket.objects[key].write(file)
+
+    logger.info "File upload successful"
 
     self.s3_key = key
     self.save!
