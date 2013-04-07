@@ -13,10 +13,21 @@
   </head>
 
   <body>
+    <% if settings.development? %>
+    <div class="navbar navbar-fixed-top">
+    <% else %>
     <div class="navbar navbar-inverse navbar-fixed-top">
+    <% end %>
       <div class="navbar-inner">
         <div class="container">
           <a class="brand" href="/">Amalgam Dashboard</a>
+          <% if settings.development? %>
+            <div class="nav-collapse collapse">
+              <ul class="nav" style="padding:10px 0 10px">
+                <li><span class="label label-important">DEVELOPMENT</span><li>
+              </ul>
+            </div>
+          <% end %>
         </div>
       </div>
     </div>
