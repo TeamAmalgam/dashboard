@@ -81,8 +81,10 @@ helpers do
     s3_link.nil? ? "&nbsp;" : "<a href='#{s3_link}'>link</a>"
   end
 
-  # Sums the duration of all the most recent completed tests
-  def total_test_time
+  # Sums the duration of all the most recent completed models
+  # Note the use of terminology. "Tests" might refer to unit tests.
+  # In this case, "tests" refers to running a model.
+  def total_model_time
     Model.all
       .map(&:last_completed_test)
       .reject{|t| t.nil?}
@@ -90,14 +92,14 @@ helpers do
       .sum
   end
 
-  def number_pending_tests
+  def number_pending_models
     Model.all
       .map(&:last_test)
       .select{|t| !t.nil? && t.pending?}
       .count
   end
 
-  def number_failing_tests
+  def number_failing_models
     Model.all
       .map(&:last_completed_test)
       .select{|t| !t.nil? && !t.correct?}

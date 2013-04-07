@@ -4,23 +4,23 @@
 
 <div class="row">
   <div class="span6 well" style="display:inline;height:250px">
-    <p class="lead text-left">The most recent tests took</p>
+    <p class="lead text-left">The most recent models took</p>
     <div class="text-center" style="font-size:96px;font-weight:500;padding:70px 0 90px">
-      <%= pretty_duration total_test_time %>
+      <%= pretty_duration total_model_time %>
     </div>
     <p class="lead text-right">to run.</p>
   </div>
   <div class="span5" style="display:inline">
     <div class="span5 well" style="height:95px">
-      <p class="lead text-left">Pending tests:</p>
+      <p class="lead text-left">Pending models:</p>
       <div class="text-center" style="font-size:72px;font-weight:500">
-        <%= number_pending_tests %>
+        <%= number_pending_models %>
       </div>
     </div>
     <div class="span5 well" style="height:95px">
-      <p class="lead text-left">Failing tests:</p>
+      <p class="lead text-left">Failing models:</p>
       <div class="text-center" style="font-size:72px;font-weight:500">
-        <%= number_failing_tests %>
+        <%= number_failing_models %>
       </div>
     </div>
   </div>
