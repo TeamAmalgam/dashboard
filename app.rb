@@ -31,15 +31,12 @@ TestResult.s3_bucket = s3.buckets[settings.s3_bucket]
 TestResult.hipchat_client = HipChat::Client.new(settings.hipchat_access_key)
 TestResult.hipchat_room = settings.hipchat_room
 
-get "/" do
-  @title = "Amalgam Dashboard"
-  erb :"index"
-end
-
-get "/models" do
-  @title = "Amalgam Dashboard - Models"
-  @models = Model.order("filepath")
-  erb :"models_list"
+["/", "/models"].each do |path|
+  get path do
+    @title = "Amalgam Dashboard"
+    @models = Model.order("filepath")
+    erb :"index"
+  end
 end
 
 get "/models/:id" do
@@ -74,7 +71,7 @@ post "/models/:id/run" do
 
   @model.run_test(params[:test_type])
 
-  redirect to('/models')
+  redirect to('/')
 end
 
 post "/result" do
