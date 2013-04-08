@@ -6,10 +6,20 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <%= stylesheet "/css/bootstrap.min.css" %>
     <%= stylesheet "/css/bootstrap-fileupload.min.css" %>
+    <%= stylesheet "/css/tablesorter.theme.bootstrap.css" %>
     <%= stylesheet "/css/dashboard.css" %>
     <style>
       body {
         padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+      .tablesorter-filter-row input.tablesorter-filter {
+        font-size: 12px;
+      }
+      .tablesorter-filter-row input.tablesorter-filter.disabled {
+        background-color: rgb(238, 238, 238);
+        cursor: default;
+        border: 0;
+        box-shadow: none;
       }
     </style>
   </head>
@@ -38,12 +48,31 @@
       <%= yield %>
     </div>
 
+    <script src="http://d3js.org/d3.v3.min.js"></script> 
     <script src="/js/bootstrap.min.js"></script>
     <script src="/js/bootstrap-fileupload.min.js"></script>
-    <script src="http://d3js.org/d3.v3.min.js"></script> 
+    <script src="/js/jquery.tablesorter.min.js"></script>
+    <script src="/js/jquery.tablesorter.widgets.js"></script>
     <script type="text/javascript">
       $(document).ready(function() {
         $("i[data-toggle='tooltip']").tooltip();
+        $.tablesorter.addParser({
+          id: 'testResultTypeParser',
+          is: function(s) { return false; },
+          format: function(s, table, cell, cellIndex) {
+            return $(cell).attr('data-test-result-type');
+          },
+          type: 'numeric'
+        });
+        $("#models").tablesorter({
+          theme: 'bootstrap',
+          headers: {
+            0 : { sorter: 'testResultTypeParser' }
+          },
+          headerTemplate: '{icon} {content}',
+          widgets: ['filter', 'uitheme'],
+          widthFixed: true
+        });
       });
     </script>
     <% if settings.ga_tracking_code && settings.ga_domain %>

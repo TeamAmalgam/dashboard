@@ -48,37 +48,38 @@
 </div>
 
 <h1>List of Models</h1>
-<table class="table table-hover table-condensed">
+<table id="models" class="table table-hover table-condensed tablesorter">
   <thead>
     <tr>
-      <th width="15px">&nbsp;</th>
+      <th width="15px" data-filter="false">&nbsp;</th>
       <th>Model</th>
-      <th>Last Test Duration</th>
-      <th>Request Test</th>
+      <th>Duration</th>
+      <th data-sorter="false" data-filter="false">Request Test</th>
     </tr>
   </thead>
   <tbody>
   <% @models.each do |model| %>
-    <tr class="<%= test_result_row_class model.last_test %>">
-      <td>
+    <% duration = model.last_completed_test ? model.last_completed_test.runtime_seconds : nil %>
+    <tr class="<%= test_result_row_class model.last_test %>" data-id="<%= model.id %>">
+      <td data-test-result-type="<%= test_result_number model.last_test %>">
         <%= test_result_icon model.last_test %>
       </td>
       <td>
         <a href="/models/<%= model.id %>"><%= model.filepath %></a>
       </td>
-      <td>
-        <% duration = model.last_completed_test ? model.last_completed_test.runtime_seconds : nil %>
+      <td data-duration="<%= duration %>">
         <%= pretty_duration duration %>
       </td>
       <td>
         <% unless model.s3_key.nil? %>
-        <form action="/models/<%= model.id %>/run" method="POST" style="margin:-5px 0 -10px">
+        <form action="/models/<%= model.id %>/run" method="POST" style="margin:0;display:inline">
           <input type="hidden" name="test_type" value="CORRECTNESS"/>
-          <button type="submit" class="btn btn-link">Correctness</button>
+          <button type="submit" class="btn btn-link" style="padding:0">Correctness</button>
         </form>
-        <form action="/models/<%= model.id %>/run" method="POST" style="margin:0 0 -5px">
+        |
+        <form action="/models/<%= model.id %>/run" method="POST" style="margin:0;display:inline">
           <input type="hidden" name="test_type" value="PERFORMANCE"/>
-          <button type="submit" class="btn btn-link">Performance</button>
+          <button type="submit" class="btn btn-link" style="padding:0">Performance</button>
         </form>
         <% end %>
       </td>

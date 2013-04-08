@@ -54,6 +54,14 @@ helpers do
     "error"
   end
 
+  def test_result_number(test_result)
+    return nil if test_result.nil?
+
+    return 0 if test_result.pending?
+    return 2 if test_result.correct?
+    1
+  end
+
   def test_type(test_result)
     return nil if test_result.nil?
 
