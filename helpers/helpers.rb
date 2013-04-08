@@ -54,7 +54,7 @@ helpers do
     "error"
   end
 
-  def test_result_number(test_result)
+  def test_result_status_number(test_result)
     return nil if test_result.nil?
 
     return 0 if test_result.pending?

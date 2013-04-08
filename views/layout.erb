@@ -65,10 +65,29 @@
           },
           type: 'numeric'
         });
+        $.tablesorter.addParser({
+          id: 'testTimeParser',
+          is: function(s) { return false; },
+          format: function(s, table, cell, cellIndex) {
+            return $(cell).attr('data-test-time');
+          },
+          type: 'numeric'
+        });
         $("#models").tablesorter({
           theme: 'bootstrap',
           headers: {
             0 : { sorter: 'testResultTypeParser' }
+          },
+          headerTemplate: '{icon} {content}',
+          widgets: ['filter', 'uitheme'],
+          widthFixed: true
+        });
+        $("#testresults").tablesorter({
+          theme: 'bootstrap',
+          headers: {
+            0 : { sorter: 'testResultTypeParser' },
+            2 : { sorter: 'testTimeParser' },
+            3 : { sorter: 'testTimeParser' }
           },
           headerTemplate: '{icon} {content}',
           widgets: ['filter', 'uitheme'],

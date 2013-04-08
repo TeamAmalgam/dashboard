@@ -42,29 +42,31 @@
 </div>
 
 <h3>Test Runs</h3>
-<table class="table table-hover table-condensed">
+<table id="testresults" class="table table-hover table-condensed tablesorter">
   <thead>
     <tr>
-      <th>&nbsp;</th>
-      <th>Test Type</th>
-      <th>Requested At</th>
-      <th>Started At</th>
+      <th data-filter="false">&nbsp;</th>
+      <th class="filter-select">Test Type</th>
+      <th data-filter="false">Requested At</th>
+      <th data-filter="false">Started At</th>
       <th>Return Code</th>
       <th>Duration</th>
-      <th>Tarball Link</th>
+      <th data-filter="false" data-sorter="false">Tarball Link</th>
     </tr>
   </thead>
 
   <% @test_results.each do |t| %>
-    <tr class="<%= test_result_row_class t %>">
-      <td>
+    <tr class="<%= test_result_row_class t %>" data-id="<%= t.id %>">
+      <td data-test-result-type="<%= test_result_status_number t %>">
         <%= test_result_icon t %>
       </td>
       <td><%= test_type t %></td>
-      <td><%= pretty_timestamp t.requested_at %></td>
-      <td><%= pretty_timestamp t.started_at %></td>
+      <% requested_at = t.requested_at ? t.requested_at.to_i : nil %>
+      <% started_at = t.started_at ? t.started_at.to_i : nil %>
+      <td data-test-time="<%= requested_at %>"><%= pretty_timestamp t.requested_at %></td>
+      <td data-test-time="<%= started_at %>"><%= pretty_timestamp t.started_at %></td>
       <td><%= t.return_code %></td>
-      <td><%= pretty_duration t.runtime_seconds %></td>
+      <td data-duration="<%= t.runtime_seconds %>"><%= pretty_duration t.runtime_seconds %></td>
       <td><%= test_result_s3_link t %></td>
     </tr>
   <% end %>
