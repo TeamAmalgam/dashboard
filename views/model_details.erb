@@ -4,10 +4,12 @@
     <td width="15%"><strong>Filepath</strong></td>
     <td><%= @model.filepath %></td>
   </tr>
+  <% unless @model.s3_key.nil? %>
   <tr>
     <td><strong>Tarball</strong></td>
     <td><%= model_s3_link @model %></td>
   </tr>
+  <% end %>
   <tr>
     <td><strong>Upload</strong></td>
     <td>
@@ -20,10 +22,11 @@
         </div>
       </form>
     </td>
+  </tr>
+  <% unless @model.s3_key.nil? %>
   <tr>
     <td><strong>Request Test</strong></td>
     <td>
-      <% unless @model.s3_key.nil? %>
       <form action="/models/<%= @model.id %>/run" method="POST" style="margin-bottom:0;display:inline;">
         <input type="hidden" name="test_type" value="CORRECTNESS"/>
         <button class="btn" type="submit">Correctness</button>
@@ -32,9 +35,9 @@
         <input type="hidden" name="test_type" value="PERFORMANCE"/>
         <button class="btn" type="submit">Performance</button>
       </form>
-      <% end %>
     </td>
   </tr>
+  <% end %>
 </table>
 
 <h3>Runtime Performance</h3>
