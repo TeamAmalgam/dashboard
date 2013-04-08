@@ -23,3 +23,8 @@ circle.correct {
 circle.incorrect {
   fill: red;
 }
+
+circle:hover {
+  stroke: black;
+  stroke-width: 2;
+}

@@ -132,9 +132,15 @@
          .attr("cy", function(d) {
           return yscale(d.runtime_seconds);
          })
-         .attr("r", 5)
+         .attr("r", 7.5)
          .attr("class", function(d) {
            return (d.correct == 1) ? "correct" : "incorrect";
-         });
+         })
+         .attr("title", function(d) {
+           var tooltip = (d.correct == 1) ? "Correct" : "Incorrect";
+           tooltip += "\n";
+           tooltip += d.runtime_seconds + "s";
+           return tooltip;
+         })
   });
 </script>
