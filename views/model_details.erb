@@ -136,11 +136,12 @@
          .attr("class", function(d) {
            return (d.correct == 1) ? "correct" : "incorrect";
          })
-         .attr("title", function(d) {
+         .insert("title")
+         .text(function(d) {
            var tooltip = (d.correct == 1) ? "Correct" : "Incorrect";
            tooltip += "\n";
            tooltip += d.runtime_seconds + "s";
            return tooltip;
-         })
+         });
   });
 </script>
