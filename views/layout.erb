@@ -33,13 +33,14 @@
       <div class="navbar-inner">
         <div class="container">
           <a class="brand" href="/">Amalgam Dashboard</a>
-          <% if settings.development? %>
-            <div class="nav-collapse collapse">
-              <ul class="nav" style="padding:10px 0 10px">
-                <li><span class="label label-important">DEVELOPMENT</span><li>
-              </ul>
-            </div>
-          <% end %>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <% if settings.development? %>
+                <li><span class="label label-important" style="margin:12px 0 10px">DEVELOPMENT</span><li>
+              <% end %>
+              <li><a href="/models">Models</a></li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
