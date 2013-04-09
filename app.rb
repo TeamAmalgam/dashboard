@@ -47,6 +47,8 @@ TestResult.s3_bucket = s3.buckets[settings.s3_bucket]
 TestResult.hipchat_client = HipChat::Client.new(settings.hipchat_access_key)
 TestResult.hipchat_room = settings.hipchat_room
 
+set :static, false
+
 get "/" do
     @title = "Amalgam Dashboard"
     erb :"index"
