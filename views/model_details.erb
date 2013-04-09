@@ -145,7 +145,7 @@
          .text(function(d) {
            var tooltip = (d.correct == 1) ? "Correct" : "Incorrect";
            tooltip += "\n";
-           tooltip += d.runtime_seconds + "s";
+           tooltip += d.pretty_duration;
            return tooltip;
          });
   });

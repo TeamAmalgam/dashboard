@@ -124,7 +124,8 @@ helpers do
         completed: #{result.completed? ? 1 : 0},
         correct: #{result.correct? ? 1 : 0},
         datetime: new Date("#{result.started_at.to_datetime.to_s}"),
-        runtime_seconds: #{result.runtime_seconds}
+        runtime_seconds: #{result.runtime_seconds},
+        pretty_duration: "#{pretty_duration result.runtime_seconds}"
       }
       ENTRY
     end.join(",\n") + "\n]\n"
