@@ -1,6 +1,7 @@
 class TestResult < ActiveRecord::Base
   belongs_to :model
-  
+  has_one :worker
+
   module TestTypes
     CORRECTNESS = 0
     PERFORMANCE = 1 

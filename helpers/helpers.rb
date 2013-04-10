@@ -130,4 +130,33 @@ helpers do
       ENTRY
     end.join(",\n") + "\n]\n"
   end
+
+  def worker_status_row_class(worker)
+    return nil if worker.nil?
+
+    return "success" if worker.last_heartbeat > 5.minutes.ago
+    return "warning" if worker.last_heartbeat > 10.minutes.ago
+    "error"
+  end
+
+  def worker_status_icon(worker)
+    return nil if worker.nil?
+
+    string = '<i data-toggle="tooltip" data-placement="left" class="'
+    string +=
+      if worker.last_heartbeat > 5.minutes.ago then
+        'icon-ok" title="OK"></i>'
+      elsif worker.last_heartbeat > 10.minutes.ago then
+        'icon-question-sign" title="Warning"></i>'
+      else
+        'icon-remove" title="Failed"></i>'
+    end
+  end
+
+  def worker_state_message(worker)
+    return nil if worker.nil?
+
+    return "Waiting for job." if worker.test_result.nil?
+    return "Running #{worker.test_result.model.friendly_name}"
+  end
 end

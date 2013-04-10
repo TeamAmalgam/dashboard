@@ -124,3 +124,39 @@ end
 
 post "/repo/post_commit/:secret" do
 end
+
+get "/workers" do
+  @workers = Worker.all
+
+  erb :workers_list
+end
+
+post "/workers/register" do
+  protected! if settings.production?
+
+  request.body.rewind
+  data = JSON.parse request.body.read
+
+  worker = Worker.create(:last_heartbeat => Time.now,
+                         :hostname => data["hostname"])
+  {:worker_id => worker.id}.to_json
+end
+
+post "/workers/:id/heartbeat" do
+  protected! if settings.production?
+
+  request.body.rewind
+  data = JSON.parse request.body.read
+
+  worker = Worker.where(:id => params[:id]).first
+  worker.heartbeat(Time.now, data["test_result_id"])
+
+  "OK"
+end
+
+post "/workers/:id/unregister" do
+  protected! if settings.production?
+
+  worker = Worker.where(:id => params[:id]).first
+  worker.delete
+end

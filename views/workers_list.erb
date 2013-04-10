@@ -1,0 +1,21 @@
+<table id="workers" class="table table-hover table-condensed">
+  <thead>
+    <tr>
+      <th width="15px">&nbsp;</th>
+      <th>Hostname</th>
+      <th>Last Heartbeat</th>
+      <th>Current State</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% @workers.each do |worker| %>
+    <tr class="<%= worker_status_row_class worker %>">
+      <td><%= worker_status_icon worker %></td>
+      <td><%= worker.hostname %></td>
+      <td><%= pretty_timestamp worker.last_heartbeat %></td>
+      <td><%= worker_state_message worker %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+
