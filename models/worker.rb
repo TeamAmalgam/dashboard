@@ -20,6 +20,18 @@ class Worker < ActiveRecord::Base
     self.save!
   end
 
+  def self.running_count
+    self.where("test_result_id IS NOT NULL").count
+  end
+
+  def self.idle_count
+    self.where(:test_result_id => nil).count
+  end
+
+  def self.failing_count
+    self.where("last_heartbeat < ?", 10.minutes.ago).count
+  end
+
   def self.notify_hipchat!(id, host, action)
     client = @@hipchat_client
     room = @@hipchat_room

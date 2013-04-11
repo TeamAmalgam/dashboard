@@ -1,48 +1,61 @@
 <!--<p>Todo. Put some nice summary graphs and numbers and statuses here.</p>-->
 
-<div class="row">
-  <div class="span6 well" style="display:inline;height:250px">
-    <p class="lead text-left">The most recent models took</p>
-    <div class="text-center" style="font-size:96px;font-weight:500;padding:70px 0 90px">
-      <%= pretty_duration total_model_time %>
+<div class="row" style="height:200px">
+  <span class="span12">
+    <div class="well" style="padding-bottom:0">
+      <p class="lead text-left">The most recent models took</p>
+      <div class="text-center" style="font-size:100px;font-weight:500;padding:50px 0 50px">
+        <%= pretty_duration total_model_time %>
+      </div>
+      <p class="lead text-right">to run.</p>
     </div>
-    <p class="lead text-right">to run.</p>
-  </div>
-  <div class="span5" style="display:inline">
-    <div class="span5 well" style="height:95px">
+  </span>
+</div>
+
+<div class="row">
+  <div class="span6">
+    <div class="well" style="height:100px">
       <p class="lead text-left">Pending models:</p>
       <div class="text-center" style="font-size:72px;font-weight:500">
         <%= number_pending_models %>
       </div>
     </div>
-    <div class="span5 well" style="height:95px">
+  </div>
+  <div class="span6">
+    <div class="well" style="height:100px">
       <p class="lead text-left">Failing models:</p>
       <div class="text-center" style="font-size:72px;font-weight:500">
         <%= number_failing_models %>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- <div class="span5" style="display:inline">
-    <div class="span5 well" style="height:44px">
-      <p class="text-left" style="margin:0">Pending models:</p>
-      <div class="text-center" style="font-size:42px;font-weight:500">
-        <%= number_pending_models %>
+<div class="row">
+  <div class="span4">
+    <div class="well" style="height:100px">
+      <p class="lead text-left">Total workers:</p>
+      <div class="text-center" style="font-size:72px;font-weight:500">
+        <%= Worker.count %>
       </div>
     </div>
-    <div class="span5 well" style="height:43px">
-      <p class="text-left" style="margin:0">Failing models:</p>
-      <div class="text-center" style="font-size:42px;font-weight:500">
-        <%= number_failing_models %>
+  </div>
+  <div class="span4">
+    <div class="well" style="height:100px">
+      <p class="lead text-left">Idle workers:</p>
+      <div class="text-center" style="font-size:72px;font-weight:500">
+        <%= Worker.idle_count %>
       </div>
     </div>
-    <div class="span5 well" style="height:43px">
-      <p class="text-left" style="margin:0">Failing unit tests:</p>
-      <div class="text-center" style="font-size:42px;font-weight:500">
-        TODO
+  </div>
+  <div class="span4">
+    <div class="well" style="height:100px">
+      <p class="lead text-left">Failing workers:</p>
+      <div class="text-center" style="font-size:72px;font-weight:500">
+        <%= Worker.failing_count %>
       </div>
     </div>
-  </div> -->
+  </div>
 </div>
 
 <script>

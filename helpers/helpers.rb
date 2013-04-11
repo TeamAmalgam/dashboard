@@ -144,9 +144,9 @@ helpers do
 
     string = '<i data-toggle="tooltip" data-placement="left" class="'
     string +=
-      if worker.last_heartbeat > 5.minutes.ago then
+      if worker.last_heartbeat > 5.minutes.ago then       # within 5 min
         'icon-ok" title="OK"></i>'
-      elsif worker.last_heartbeat > 10.minutes.ago then
+      elsif worker.last_heartbeat > 10.minutes.ago then   # within 10 min
         'icon-question-sign" title="Warning"></i>'
       else
         'icon-remove" title="Failed"></i>'
