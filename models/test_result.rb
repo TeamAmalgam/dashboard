@@ -56,14 +56,20 @@ class TestResult < ActiveRecord::Base
 
 private
 
-  def self.notify_hipchat!(id, name, time, correct)
+  def self.notify_hipchat!(id, name, total_seconds, correct)
     client = @@hipchat_client
     room = @@hipchat_room
 
     colour = correct ? "green" : "red"
     result = correct ? "success" : "fail"
 
-    message = "Test run #{id} completed with result #{result}. Model #{name} ran in #{time} seconds."
+    seconds = total_seconds % 60
+    minutes = (total_seconds / 60) % 60
+    hours = total_seconds / (60 * 60)
+
+    time = format("%02d:%02d:%02d", hours, minutes, seconds)
+
+    message = "Test run #{id} completed with result #{result}. Model #{name} ran in #{time}."
 
     client[room].send("Dashboard", message, :color => colour)
   end
