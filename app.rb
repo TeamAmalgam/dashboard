@@ -58,7 +58,7 @@ end
 
 get "/models" do
     @title = "Amalgam Dashboard - Models"
-    @models = Model.order("filepath")
+    @models = Model.order("filepath").includes(:last_test, :last_completed_test)
     erb :"models_list"
 end
 
