@@ -46,6 +46,8 @@ TestResult.s3_bucket = s3.buckets[settings.s3_bucket]
 
 TestResult.hipchat_client = HipChat::Client.new(settings.hipchat_access_key)
 TestResult.hipchat_room = settings.hipchat_room
+Worker.hipchat_client = HipChat::Client.new(settings.hipchat_access_key)
+Worker.hipchat_room = settings.hipchat_room
 
 set :static, false
 
@@ -127,6 +129,7 @@ end
 
 get "/workers" do
   @workers = Worker.all
+  @title = "Workers"
 
   erb :workers_list
 end
@@ -139,6 +142,9 @@ post "/workers/register" do
 
   worker = Worker.create(:last_heartbeat => Time.now,
                          :hostname => data["hostname"])
+
+  Worker.notify_hipchat!(worker.id, worker.hostname, "registered")
+
   {:worker_id => worker.id}.to_json
 end
 
@@ -158,5 +164,6 @@ post "/workers/:id/unregister" do
   protected! if settings.production?
 
   worker = Worker.where(:id => params[:id]).first
+  Worker.notify_hipchat!(worker.id, worker.hostname, "unregistered")
   worker.delete
 end
