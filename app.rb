@@ -148,6 +148,26 @@ post "/workers/register" do
   {:worker_id => worker.id}.to_json
 end
 
+post "/workers/:id/start" do
+  protected! if settings.production?
+
+  request.body.rewind
+  data = JSON.parse request.body.read
+
+  worker = Worker.where(:id => params[:id]).first
+  test_result = TestResult.where(:id => data["test_id"]).first
+
+  halt 400, "400 - Bad request: worker does not exist" if worker.nil?
+  halt 400, "400 - Bad request: test result does not exist" if test_result.nil? 
+
+  worker.heartbeat(Time.now, data["test_id"])
+
+  test_result.started_at = Time.now
+  test_result.save!
+
+  "OK"
+end
+
 post "/workers/:id/heartbeat" do
   protected! if settings.production?
 
@@ -155,7 +175,30 @@ post "/workers/:id/heartbeat" do
   data = JSON.parse request.body.read
 
   worker = Worker.where(:id => params[:id]).first
-  worker.heartbeat(Time.now, data["test_result_id"])
+
+  halt 400, "400 - Bad request: worker does not exist" if worker.nil?
+
+  worker.heartbeat(Time.now, data["test_id"])
+
+  "OK"
+end
+
+post "/workers/:id/result" do
+  protected! if settings.production?
+
+  request.body.rewind
+  data = JSON.parse request.body.read
+  
+  worker = Worker.where(:id => params[:id]).first
+  result = TestResult.where(:id => data["test_id"]).first
+  
+  halt 400, "400 - Bad request: worker does not exist" if worker.nil?
+  halt 400, "400 - Bad request: submitted test result does not exist" if result.nil?
+
+  worker.heartbeat(Time.now, nil)
+
+  # Pass the data to the model and let it handle the rest
+  result.test_completed data
 
   "OK"
 end
