@@ -44,10 +44,12 @@ s3 = AWS::S3.new
 Model.s3_bucket = s3.buckets[settings.s3_bucket]
 TestResult.s3_bucket = s3.buckets[settings.s3_bucket]
 
-TestResult.hipchat_client = HipChat::Client.new(settings.hipchat_access_key)
-TestResult.hipchat_room = settings.hipchat_room
-Worker.hipchat_client = HipChat::Client.new(settings.hipchat_access_key)
-Worker.hipchat_room = settings.hipchat_room
+unless settings.hipchat_access_key.nil? || settings.hipchat_room.nil?
+  TestResult.hipchat_client = HipChat::Client.new(settings.hipchat_access_key)
+  TestResult.hipchat_room = settings.hipchat_room
+  Worker.hipchat_client = HipChat::Client.new(settings.hipchat_access_key)
+  Worker.hipchat_room = settings.hipchat_room
+end
 
 set :static, false
 

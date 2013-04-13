@@ -71,7 +71,7 @@ private
 
     message = "Test run #{id} completed with result #{result}. Model #{name} ran in #{time}."
 
-    client[room].send("Dashboard", message, :color => colour)
+    client[room].send("Dashboard", message, :color => colour) unless client.nil? || room.nil?
   end
 
 end

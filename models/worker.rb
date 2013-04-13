@@ -38,6 +38,6 @@ class Worker < ActiveRecord::Base
 
     message = "Worker #{id} on host #{host} just #{action}."
 
-    client[room].send("Worker", message)
+    client[room].send("Worker", message) unless client.nil? || room.nil?
   end
 end
