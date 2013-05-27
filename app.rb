@@ -118,7 +118,7 @@ end
 
 post "/repo/post_commit/#{settings.git_hook_secret}" do
   request.body.rewind  # in case someone already read it
-  data = JSON.parse request.body.read
+  data = JSON.parse(params[:payload])
 
   commit = data["after"]
   repo = Repo.instance
