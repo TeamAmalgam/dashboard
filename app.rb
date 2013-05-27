@@ -125,6 +125,10 @@ post "/repo/post_commit/#{settings.git_hook_secret}" do
     repo = Repo.instance
     repo.head = commit
     repo.save!
+
+    Model.where(:ci_enabled => true).all.each do |model|
+      model.run_test("CORRECTNESS")
+    end
   end
 end
 

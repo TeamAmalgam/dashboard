@@ -2,6 +2,8 @@ class Model < ActiveRecord::Base
   JOB_DESCRIPTION_VERSION = 1
 
   validates_presence_of :filepath
+  validate :ci_enabled_requires_model
+
   has_many :test_results
   has_one :last_test, :class_name => "TestResult",
                       :order => "requested_at DESC"
@@ -73,5 +75,13 @@ class Model < ActiveRecord::Base
     
     test_result.secret_key = sent_message.id
     test_result.save
+  end
+
+  private
+
+  def ci_enabled_requires_model
+    if ci_enabled? && self.s3_key.nil?
+      errors.add(:ci_enabled, "must not be true if no model is uploaded")
+    end
   end
 end
