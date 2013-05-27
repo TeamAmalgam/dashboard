@@ -14,7 +14,6 @@ gem "sinatra-contrib"
 gem "thin"
 gem "acts_as_singleton"
 gem "rack-contrib"
-gem "rack-ssl-enforcer"
 
 group :development do
   gem "shotgun"
