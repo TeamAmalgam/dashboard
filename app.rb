@@ -89,7 +89,7 @@ end
 
 post "/models/:id/run" do
   protected! if settings.production?
-  
+
   @model = Model.where(:id => params[:id]).first
 
   halt 404, "404 - Page not found." if @model.nil?
@@ -120,10 +120,12 @@ post "/repo/post_commit/#{settings.git_hook_secret}" do
   request.body.rewind  # in case someone already read it
   data = JSON.parse(params[:payload])
 
-  commit = data["after"]
-  repo = Repo.instance
-  repo.head = commit
-  repo.save!
+  if data["ref"] == "refs/heads/master"
+    commit = data["after"]
+    repo = Repo.instance
+    repo.head = commit
+    repo.save!
+  end
 end
 
 post "/repo/post_commit/:secret" do
@@ -160,7 +162,7 @@ post "/workers/:id/start" do
   test_result = TestResult.where(:id => data["test_id"]).first
 
   halt 400, "400 - Bad request: worker does not exist" if worker.nil?
-  halt 400, "400 - Bad request: test result does not exist" if test_result.nil? 
+  halt 400, "400 - Bad request: test result does not exist" if test_result.nil?
 
   worker.heartbeat(Time.now, data["test_id"])
 
@@ -190,10 +192,10 @@ post "/workers/:id/result" do
 
   request.body.rewind
   data = JSON.parse request.body.read
-  
+
   worker = Worker.where(:id => params[:id]).first
   result = TestResult.where(:id => data["test_id"]).first
-  
+
   halt 400, "400 - Bad request: worker does not exist" if worker.nil?
   halt 400, "400 - Bad request: submitted test result does not exist" if result.nil?
 
