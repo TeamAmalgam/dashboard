@@ -51,13 +51,16 @@ class Model < ActiveRecord::Base
 
     raise "No model uploaded." unless self.s3_key
 
+    commit = Repo.instance.head
+
     test_result = self.test_results.create(:requested_at => DateTime.now,
                                            :test_type => test_type,
+                                           :commit => commit,
                                            :completed => false)
     job_description = {
       :version => JOB_DESCRIPTION_VERSION,
       :test_id => test_result.id,
-      :commit => Repo.instance.head,
+      :commit => commit,
       :model_s3_key => self.s3_key,
     }.to_yaml
 
