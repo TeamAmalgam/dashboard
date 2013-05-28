@@ -4,6 +4,7 @@
       <th width="15px" data-filter="false">&nbsp;</th>
       <th>Model</th>
       <th>Duration</th>
+      <th width="15px" data-sorter="false" data-filter="false">CI</th>
       <th data-sorter="false" data-filter="false">Request Test</th>
     </tr>
   </thead>
@@ -19,6 +20,11 @@
       </td>
       <td style="text-align:right;padding-right:10px" data-duration="<%= duration %>">
         <%= pretty_duration duration %>
+      </td>
+      <td>
+        <% if model.ci_enabled? %>
+          <i class="icon-ok"/>
+        <% end %>
       </td>
       <td>
         <% unless model.s3_key.nil? %>
