@@ -50,6 +50,7 @@
     <tr>
       <th data-filter="false">&nbsp;</th>
       <th class="filter-select">Test Type</th>
+      <th class="filter-select">Commit</th>
       <th data-filter="false">Requested At</th>
       <th data-filter="false">Started At</th>
       <th>Return Code</th>
@@ -64,6 +65,13 @@
         <%= test_result_icon t %>
       </td>
       <td><%= test_type t %></td>
+
+      <% if t.commit.nil? %>
+        <td>Unknown</td>
+      <% else %>
+        <td><%= t.commit[0,7] %>...</td>
+      <% end %>
+
       <% requested_at = t.requested_at ? t.requested_at.to_i : nil %>
       <% started_at = t.started_at ? t.started_at.to_i : nil %>
       <td data-test-time="<%= requested_at %>"><%= pretty_timestamp t.requested_at %></td>
