@@ -123,11 +123,14 @@ post "/repo/post_commit/#{settings.git_hook_secret}" do
   if data["ref"] == "refs/heads/master"
     commit = data["after"]
     repo = Repo.instance
-    repo.head = commit
-    repo.save!
 
-    Model.where(:ci_enabled => true).all.each do |model|
-      model.run_test("CORRECTNESS")
+    if commit != repo.head
+      repo.head = commit
+      repo.save!
+
+      Model.where(:ci_enabled => true).all.each do |model|
+        model.run_test("CORRECTNESS")
+      end
     end
   end
 end
