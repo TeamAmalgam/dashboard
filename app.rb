@@ -17,6 +17,7 @@ set :aws_access_key_id, ENV['AWS_ACCESS_KEY_ID']
 set :aws_secret_access_key, ENV['AWS_SECRET_ACCESS_KEY']
 set :performance_sqs_queue, ENV['PERFORMANCE_SQS_QUEUE']
 set :correctness_sqs_queue, ENV['CORRECTNESS_SQS_QUEUE']
+set :ci_sqs_queue, ENV['CI_SQS_QUEUE']
 set :s3_bucket, ENV['S3_BUCKET']
 set :hipchat_access_key, ENV['HIPCHAT_ACCESS_KEY']
 set :hipchat_room, ENV['HIPCHAT_ROOM']
@@ -39,6 +40,7 @@ AWS.config(:access_key_id => settings.aws_access_key_id,
 sqs = AWS::SQS.new
 Model.performance_queue = sqs.queues.named(settings.performance_sqs_queue)
 Model.correctness_queue = sqs.queues.named(settings.correctness_sqs_queue)
+Model.ci_queue = sqs.queues.named(settings.ci_sqs_queue)
 
 s3 = AWS::S3.new
 Model.s3_bucket = s3.buckets[settings.s3_bucket]
@@ -94,7 +96,12 @@ post "/models/:id/run" do
 
   halt 404, "404 - Page not found." if @model.nil?
 
-  @model.run_test(params[:test_type])
+  test_type = case params[:test_type]
+                when "CORRECTNESS" then TestResult::TestTypes::CORRECTNESS
+                when "PERFORMANCE" then TestResult::TestTypes::PERFORMANCE
+              end
+
+  @model.run_test(test_type)
 
   redirect to('/models')
 end
@@ -129,7 +136,7 @@ post "/repo/post_commit/#{settings.git_hook_secret}" do
       repo.save!
 
       Model.where(:ci_enabled => true).all.each do |model|
-        model.run_test("CORRECTNESS")
+        model.run_test(TestResult::TestTypes::CONTINUOUS_INTEGRATION)
       end
     end
   end
