@@ -139,7 +139,7 @@ post "/repo/post_commit/:secret" do
 end
 
 get "/workers" do
-  @workers = Worker.all
+  @workers = Worker.order(:id).all
   @title = "Workers"
 
   erb :workers_list
