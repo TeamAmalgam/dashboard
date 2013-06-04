@@ -5,8 +5,8 @@ class TestResult < ActiveRecord::Base
   module TestTypes
     CORRECTNESS = 0
     PERFORMANCE = 1 
-
-    VALID_TYPES = (0..1)
+    CONTINUOUS_INTEGRATION = 2
+    VALID_TYPES = (0..2)
   end
 
   validates_presence_of :requested_at
