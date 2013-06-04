@@ -14,6 +14,7 @@ class Model < ActiveRecord::Base
   cattr_accessor :s3_bucket
   cattr_accessor :performance_queue
   cattr_accessor :correctness_queue
+  cattr_accessor :ci_queue
 
   def friendly_name
     File.basename(self.filepath)
@@ -43,14 +44,6 @@ class Model < ActiveRecord::Base
   end
 
   def run_test(test_type)
-    if test_type == "CORRECTNESS"
-      test_type = TestResult::TestTypes::CORRECTNESS
-    elsif test_type == "PERFORMANCE"
-      test_type = TestResult::TestTypes::PERFORMANCE
-    else
-      raise "Invalid Test Type."
-    end
-
     raise "No model uploaded." unless self.s3_key
 
     commit = Repo.instance.head
@@ -69,6 +62,7 @@ class Model < ActiveRecord::Base
     queue = case test_type
               when TestResult::TestTypes::CORRECTNESS then @@correctness_queue
               when TestResult::TestTypes::PERFORMANCE then @@performance_queue
+              when TestResult::TestTypes::CONTINUOUS_INTEGRATION then @@ci_queue
             end
 
     sent_message = queue.send_message(job_description)

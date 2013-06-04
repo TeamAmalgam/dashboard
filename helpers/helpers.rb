@@ -70,6 +70,8 @@ helpers do
       "Performance"
     when TestResult::TestTypes::CORRECTNESS
       "Correctness"
+    when TestResult::TestTypes::CONTINUOUS_INTEGRATION
+      "CI"
     else
       "Unknown"
     end
