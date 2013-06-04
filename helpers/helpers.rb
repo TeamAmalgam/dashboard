@@ -95,8 +95,8 @@ helpers do
   # Note the use of terminology. "Tests" might refer to unit tests.
   # In this case, "tests" refers to running a model.
   def total_model_time
-    Model.includes(:last_completed_test).all
-      .map(&:last_completed_test)
+    Model.includes(:last_correct_test).all
+      .map(&:last_correct_test)
       .reject{|t| t.nil?}
       .map{|t| t.runtime_seconds}
       .sum

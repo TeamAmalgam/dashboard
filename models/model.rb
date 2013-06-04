@@ -10,6 +10,9 @@ class Model < ActiveRecord::Base
   has_one :last_completed_test, :class_name => "TestResult",
                                 :order => "requested_at DESC",
                                 :conditions => {:completed => true}
+  has_one :last_correct_test, :class_name => "TestResult",
+                              :order => "requested_at DESC",
+                              :conditions => {:completed => true, :correct => true}
 
   cattr_accessor :s3_bucket
   cattr_accessor :performance_queue
