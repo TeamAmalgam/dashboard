@@ -5,7 +5,11 @@ class Worker < ActiveRecord::Base
   cattr_accessor :hipchat_client
   cattr_accessor :hipchat_room
 
+  before_create { |worker| worker.last_state_change_time = Time.now }
+
   def heartbeat(time, test_result_id)
+    old_test_result_id = self.test_result_id
+
     if !test_result_id.nil?
       test_result = TestResult.where(:id => test_result_id).first
 
@@ -15,6 +19,10 @@ class Worker < ActiveRecord::Base
       self.test_result = nil
     end
 
+    if old_test_result_id != self.test_result_id
+      self.last_state_change_time = time
+    end
+    
     self.last_heartbeat = time
 
     self.save!
