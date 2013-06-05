@@ -4,6 +4,7 @@
       <th width="15px">&nbsp;</th>
       <th>Hostname</th>
       <th>Last Heartbeat</th>
+      <th>Last State Change</th>
       <th>Current State</th>
     </tr>
   </thead>
@@ -13,6 +14,7 @@
       <td><%= worker_status_icon worker %></td>
       <td><%= worker.hostname %></td>
       <td><%= pretty_timestamp worker.last_heartbeat %></td>
+      <td><%= pretty_timestamp worker.last_state_change_time %></td>
       <td><%= worker_state_message worker %></td>
     </tr>
   <% end %>
