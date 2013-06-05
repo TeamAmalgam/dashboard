@@ -35,8 +35,8 @@ class Model < ActiveRecord::Base
 
     hash = Digest::SHA2.hexdigest(file_name.to_s + Time.now.to_s).to_s
     key = case file_name.to_s
-        when /\.tar\.gz$/i then "models/#{hash}.tar.gz"
-        when /\.tar\.bz2$/i then "models/#{hash}.tar.bz2"
+        when /\.tar\.gz\z/i then "models/#{hash}.tar.gz"
+        when /\.tar\.bz2\z/i then "models/#{hash}.tar.bz2"
         else raise "Invalid file format. Expected tar.gz or tar.bz2"
       end
 
