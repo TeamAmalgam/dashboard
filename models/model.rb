@@ -34,7 +34,11 @@ class Model < ActiveRecord::Base
     logger.info "Received request to upload file for model #{self.id}"
 
     hash = Digest::SHA2.hexdigest(file_name.to_s + Time.now.to_s).to_s
-    key = "models/#{hash}.tar.gz"
+    key = case file_name.to_s
+        when /\.tar\.gz\z/i then "models/#{hash}.tar.gz"
+        when /\.tar\.bz2\z/i then "models/#{hash}.tar.bz2"
+        else raise "Invalid file format. Expected tar.gz or tar.bz2"
+      end
 
     logger.info "Attempting to upload file to S3"
 
