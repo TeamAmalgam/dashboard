@@ -17,9 +17,7 @@ helpers do
   def pretty_timestamp(timestamp)
     return nil if timestamp.nil?
 
-    return timestamp.strftime("%R") if timestamp.today?
-    return timestamp.strftime("%B %e at %R") if timestamp.year == Time.now.year
-    timestamp.strftime("%B %e %G at %R")
+    return "<span data-localtime-format>#{timestamp.utc.iso8601}</span>"
   end
 
   def pretty_duration(total_seconds)
@@ -136,6 +134,7 @@ helpers do
   def worker_status_row_class(worker)
     return nil if worker.nil?
 
+    return "error" if worker.last_heartbeat.nil?
     return "success" if worker.last_heartbeat > 5.minutes.ago
     return "warning" if worker.last_heartbeat > 10.minutes.ago
     "error"
@@ -146,7 +145,9 @@ helpers do
 
     string = '<i data-toggle="tooltip" data-placement="left" class="'
     string +=
-      if worker.last_heartbeat > 5.minutes.ago then       # within 5 min
+      if worker.last_heartbeat.nil? then
+        'icon-remove" title="Failed"></i>'
+      elsif worker.last_heartbeat > 5.minutes.ago then       # within 5 min
         'icon-ok" title="OK"></i>'
       elsif worker.last_heartbeat > 10.minutes.ago then   # within 10 min
         'icon-question-sign" title="Warning"></i>'
