@@ -79,7 +79,9 @@
     <script src="/js/bootstrap-fileupload.min.js"></script>
     <script src="/js/jquery.tablesorter.min.js"></script>
     <script src="/js/jquery.tablesorter.widgets.js"></script>
+    <script src="/js/jquery.localtime.min.js"></script>
     <script type="text/javascript">
+      $.localtime.setFormat("dd MMM, yyyy HH:mm");
       $(document).ready(function() {
         $("i[data-toggle='tooltip']").tooltip();
         $.tablesorter.addParser({
