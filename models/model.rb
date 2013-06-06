@@ -25,7 +25,7 @@ class Model < ActiveRecord::Base
 
   def s3_link
     return nil if self.s3_key.nil?
-    
+
     obj = @@s3_bucket.objects[self.s3_key]
     obj.url_for(:read, :secure => true, :expires => 24.hours.to_i)
   end
@@ -39,6 +39,13 @@ class Model < ActiveRecord::Base
         when /\.tar\.bz2\z/i then "models/#{hash}.tar.bz2"
         else raise "Invalid file format. Expected tar.gz or tar.bz2"
       end
+
+    valid_file = case file_name.to_s
+                   when /\.tar\.gz\z/i then validate_gzip(file)
+                   when /\.tar\.bz2\z/i then validate_bzip2(file)
+                 end
+
+    raise "File type does not match extension." unless valid_file
 
     logger.info "Attempting to upload file to S3"
 
@@ -73,7 +80,7 @@ class Model < ActiveRecord::Base
             end
 
     sent_message = queue.send_message(job_description)
-    
+
     test_result.secret_key = sent_message.id
     test_result.save
   end
@@ -84,5 +91,22 @@ class Model < ActiveRecord::Base
     if ci_enabled? && self.s3_key.nil?
       errors.add(:ci_enabled, "must not be true if no model is uploaded")
     end
+  end
+
+  def validate_gzip(file)
+    magic = file.read(2)
+    file.rewind
+
+    return false if magic.nil?
+    return (magic == [0x1F, 0x8B].pack("CC"))
+  end
+
+  def validate_bzip2(file)
+    magic = file.read(3)
+    file.rewind
+
+    return false if magic.nil?
+
+    return (magic == "BZh")
   end
 end
