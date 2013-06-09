@@ -77,8 +77,8 @@
       <td data-test-time="<%= requested_at %>"><%= pretty_timestamp t.requested_at %></td>
       <td data-test-time="<%= started_at %>"><%= pretty_timestamp t.started_at %></td>
       <td><%= t.return_code %></td>
-      <td style="text-align:right;padding-right:10px" data-duration="<%= t.runtime_seconds %>">
-        <%= pretty_duration t.runtime_seconds %>
+      <td style="text-align:right;padding-right:10px" data-duration="<%= t.cpu_time_seconds || t.runtime_seconds %>">
+        <%= pretty_duration (t.runtime_seconds || t.runtime_seconds)%>
       </td>
       <td><%= test_result_s3_link t %></td>
     </tr>

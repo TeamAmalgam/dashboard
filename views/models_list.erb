@@ -10,7 +10,7 @@
   </thead>
   <tbody>
   <% @models.each do |model| %>
-    <% duration = model.last_completed_test ? model.last_completed_test.runtime_seconds : nil %>
+    <% duration = model.last_completed_test ? (model.last_completed_test.runtime_seconds || model.last_completed_test.cpu_time_seconds) : nil %>
     <tr class="<%= test_result_row_class model.last_test %>" data-id="<%= model.id %>">
       <td data-test-result-type="<%= test_result_status_number model.last_test %>">
         <%= test_result_icon model.last_test %>

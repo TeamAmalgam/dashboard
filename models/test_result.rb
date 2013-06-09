@@ -39,6 +39,7 @@ class TestResult < ActiveRecord::Base
 
     correct = data["correct"] == 1
     runtime_seconds = data["runtime_seconds"]
+    cpu_time_seconds = data["cpu_time_seconds"]
 
     self.update_attributes({
       :completed => true,
@@ -46,17 +47,18 @@ class TestResult < ActiveRecord::Base
       :correct => correct,
       :started_at => Time.parse(data["started_at"]),
       :runtime_seconds => runtime_seconds,
+      :cpu_time_seconds => cpu_time_seconds,
       :tarball_s3_key => data["tarball_s3_key"]
     })
 
     self.save
 
-    TestResult.notify_hipchat!(self.id, self.model.friendly_name, runtime_seconds, correct)
+    TestResult.notify_hipchat!(self.id, self.model.friendly_name, runtime_seconds, cpu_time_seconds, correct)
   end
 
 private
 
-  def self.notify_hipchat!(id, name, total_seconds, correct)
+  def self.notify_hipchat!(id, name, total_seconds, total_cpu_seconds, correct)
     client = @@hipchat_client
     room = @@hipchat_room
 
@@ -69,7 +71,16 @@ private
 
     time = format("%02d:%02d:%02d", hours, minutes, seconds)
 
-    message = "Test run #{id} completed with result #{result}. Model #{name} ran in #{time}."
+    cpu_time = "unknown"
+    if !total_cpu_seconds.nil?
+      cpu_seconds = total_cpu_seconds % 60
+      cpu_minutes = (total_cpu_seconds / 60) % 60
+      cpu_hours = total_cpu_seconds / (60 * 60)
+
+      cpu_time = format("%02d:%02d:%02d", cpu_hours, cpu_minutes, cpu_seconds)
+    end
+
+    message = "Test run #{id} completed with result #{result}. Model #{name} ran in #{time} (cpu: #{cpu_time})."
 
     client[room].send("Dashboard", message, :color => colour) unless client.nil? || room.nil?
   end
