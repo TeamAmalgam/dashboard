@@ -215,7 +215,7 @@
            return xscale(d.datetime);
          })
          .attr("cy", function(d) {
-          return yscale(d.runtime_seconds);
+          return yscale(d.cpu_time_seconds);
          })
          .attr("r", 7.5)
          .attr("class", function(d) {
