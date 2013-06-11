@@ -41,6 +41,15 @@
 </table>
 
 <h3>Runtime Performance</h3>
+<div>
+  <form>
+    <input id="graph-data-filter-runtime_data" type="radio" name="graph-data-filter" value="runtime_data" checked="true"/>
+    <label for="graph-data-filter-runtime_data">Runtime Data</label>
+    <input id="graph-data-filter-cpu_time_data" type="radio" name="graph-data-filter" value="cpu_time_data" checked="false"/>
+    <label for="graph-data-filter-cpu_time_data">CPU Time Data</label>
+    </input>
+  </form>
+</div>
 <div id="runtime-performance-graph" class="well">
 </div>
 
@@ -160,11 +169,13 @@
    
     // Draw the graph lines.
     graph.append("g")
+         .classed("runtime_data", true)
          .append("path")
          .classed("connector", true)
          .attr("d", runtime_line(runtime_data));
 
     graph.append("g")
+         .classed("cpu_time_data", true)
          .append("path")
          .classed("connector", true)
          .attr("d", cpu_time_line(cpu_time_data));
@@ -195,7 +206,7 @@
          });
 
     graph.append("g")
-         .classed("cputime_data", true)
+         .classed("cpu_time_data", true)
          .selectAll("circle")
          .data(cpu_time_data)
          .enter()
@@ -217,5 +228,31 @@
            tooltip += d.pretty_duration;
            return tooltip;
          });
+
+         var update_graph_visibility = function() {
+           var show_runtime = $("#graph-data-filter-runtime_data").prop("checked");
+           var show_cpu_time = $("#graph-data-filter-cpu_time_data").prop("checked");
+
+           $("g.cpu_time_data").each(function () {
+             if(show_cpu_time) {
+               $(this).show();
+               } else {
+               $(this).hide();
+             }
+           });
+
+           $("g.runtime_data").each(function () {
+             if(show_runtime) {
+               $(this).show();
+               } else {
+               $(this).hide();
+             }
+           });
+         };
+
+         $("#graph-data-filter-runtime_data").change(update_graph_visibility);
+         $("#graph-data-filter-cpu_time_data").change(update_graph_visibility);
+
+         update_graph_visibility();
   });
 </script>
