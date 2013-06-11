@@ -55,6 +55,7 @@
       <th data-filter="false">Started At</th>
       <th>Return Code</th>
       <th>Duration</th>
+      <th>CPU Time</th>
       <th data-filter="false" data-sorter="false">Tarball Link</th>
     </tr>
   </thead>
@@ -77,8 +78,11 @@
       <td data-test-time="<%= requested_at %>"><%= pretty_timestamp t.requested_at %></td>
       <td data-test-time="<%= started_at %>"><%= pretty_timestamp t.started_at %></td>
       <td><%= t.return_code %></td>
-      <td style="text-align:right;padding-right:10px" data-duration="<%= t.cpu_time_seconds || t.runtime_seconds %>">
-        <%= pretty_duration (t.runtime_seconds || t.runtime_seconds)%>
+      <td style="text-align:right;padding-right:10px" data-duration="<%= t.runtime_seconds %>">
+        <%= pretty_duration t.runtime_seconds %>
+      </td>
+      <td style="text-align:right;padding-right:10px" data-duration="<%= t.cpu_time_seconds %>">
+        <%= pretty_duration t.cpu_time_seconds %>
       </td>
       <td><%= test_result_s3_link t %></td>
     </tr>
@@ -94,15 +98,28 @@
     var xpadding = 50;
     var ypadding = 20;
 
+    var runtime_data = test_run_data.filter(function(element, index, array) {
+      return (element.runtime_seconds != null);
+    });
+
+    var cpu_time_data = test_run_data.filter(function(element, index, array) {
+      return (element.cpu_time_seconds != null);
+    });
+
+    // Create the graph svg.
     var graph = d3.select("#runtime-performance-graph")
                   .insert("svg")
                   .attr("class", "chart")
                   .attr("width", w)
                   .attr("height", h);
+
+    // Determine the ranges of the axes.
     var xmin = d3.min(test_run_data, function(d) { return d.datetime; });
     var xmax = d3.max(test_run_data, function(d) { return d.datetime; });
     var ymin = d3.min(test_run_data, function(d) { return d.runtime_seconds; });
     var ymax = d3.max(test_run_data, function(d) { return d.runtime_seconds; });
+
+    // Define scaling functions for the axes.
     var xscale = d3.scale.linear()
                          .domain([xmin, xmax])
                          .range([xpadding, w - xpadding])
@@ -111,6 +128,8 @@
                          .domain([0, ymax])
                          .range([h - ypadding, ypadding])
                          .nice();
+
+   // Create functions to define axes.
     var xaxis = d3.svg.axis()
                       .scale(xscale)
                       .orient("bottom")
@@ -120,9 +139,16 @@
     var yaxis = d3.svg.axis()
                       .scale(yscale)
                       .orient("left");
-    var line = d3.svg.line()
+
+    // Functions that draw graph lines.
+    var runtime_line = d3.svg.line()
                      .x(function(d) { return xscale(d.datetime); })
                      .y(function(d) { return yscale(d.runtime_seconds); });
+    var cpu_time_line = d3.svg.line()
+                      .x(function(d) { return xscale(d.datetime); })
+                      .y(function(d) { return yscale(d.cpu_time_seconds); });
+
+    // Add the axes to the graph.
     graph.append("g")
          .classed("axis", true)
          .attr("transform", "translate(0," + (h - ypadding) + ")")
@@ -131,14 +157,47 @@
          .classed("axis", true)
          .attr("transform", "translate(" + xpadding + ",0)")
          .call(yaxis);
-         
+   
+    // Draw the graph lines.
     graph.append("g")
          .append("path")
          .classed("connector", true)
-         .attr("d", line(test_run_data));
+         .attr("d", runtime_line(runtime_data));
 
-    graph.selectAll("circle")
-         .data(test_run_data)
+    graph.append("g")
+         .append("path")
+         .classed("connector", true)
+         .attr("d", cpu_time_line(cpu_time_data));
+
+    // Draw the datapoints.
+    graph.append("g")
+         .classed("runtime_data", true)
+         .selectAll("circle")
+         .data(runtime_data)
+         .enter()
+         .append("circle")
+         .attr("cx", function(d) {
+           return xscale(d.datetime);
+         })
+         .attr("cy", function(d) {
+          return yscale(d.runtime_seconds);
+         })
+         .attr("r", 7.5)
+         .attr("class", function(d) {
+           return (d.correct == 1) ? "correct" : "incorrect";
+         })
+         .insert("title")
+         .text(function(d) {
+           var tooltip = (d.correct == 1) ? "Correct" : "Incorrect";
+           tooltip += "\n";
+           tooltip += d.pretty_duration;
+           return tooltip;
+         });
+
+    graph.append("g")
+         .classed("cputime_data", true)
+         .selectAll("circle")
+         .data(cpu_time_data)
          .enter()
          .append("circle")
          .attr("cx", function(d) {
