@@ -35,12 +35,12 @@
         <% unless model.s3_key.nil? %>
         <form action="/models/<%= model.id %>/run" method="POST" style="margin:0;display:inline">
           <input type="hidden" name="test_type" value="CORRECTNESS"/>
-          <button type="submit" class="btn btn-link" style="padding:0">Correctness</button>
+          <button type="submit" class="btn btn-link" style="padding:0">Correct</button>
         </form>
         |
         <form action="/models/<%= model.id %>/run" method="POST" style="margin:0;display:inline">
           <input type="hidden" name="test_type" value="PERFORMANCE"/>
-          <button type="submit" class="btn btn-link" style="padding:0">Performance</button>
+          <button type="submit" class="btn btn-link" style="padding:0">Perf</button>
         </form>
         <% end %>
       </td>
