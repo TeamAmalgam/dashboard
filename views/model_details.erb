@@ -41,14 +41,9 @@
 </table>
 
 <h3>Runtime Performance</h3>
-<div>
-  <form>
-    <input id="graph-data-filter-runtime_data" type="radio" name="graph-data-filter" value="runtime_data" checked="true"/>
-    <label for="graph-data-filter-runtime_data">Runtime Data</label>
-    <input id="graph-data-filter-cpu_time_data" type="radio" name="graph-data-filter" value="cpu_time_data" checked="false"/>
-    <label for="graph-data-filter-cpu_time_data">CPU Time Data</label>
-    </input>
-  </form>
+<div id="graph-data-filter" class="btn-group" data-toggle="buttons-radio">
+  <button id="runtime" type="button" class="btn btn-primary active">Total</button>
+  <button id="cpu_time" type="button" class="btn btn-primary">CPU</button>
 </div>
 <div id="runtime-performance-graph" class="well">
 </div>
@@ -229,9 +224,9 @@
            return tooltip;
          });
 
-         var update_graph_visibility = function() {
-           var show_runtime = $("#graph-data-filter-runtime_data").prop("checked");
-           var show_cpu_time = $("#graph-data-filter-cpu_time_data").prop("checked");
+         var update_graph_visibility = function(button_id) {
+           var show_runtime = (button_id == "runtime");
+           var show_cpu_time = (button_id == "cpu_time");
 
            $("g.cpu_time_data").each(function () {
              if(show_cpu_time) {
@@ -250,9 +245,9 @@
            });
          };
 
-         $("#graph-data-filter-runtime_data").change(update_graph_visibility);
-         $("#graph-data-filter-cpu_time_data").change(update_graph_visibility);
+         $("#graph-data-filter #runtime").click(update_graph_visibility.bind(undefined, "runtime"));
+         $("#graph-data-filter #cpu_time").click(update_graph_visibility.bind(undefined, "cpu_time"));
 
-         update_graph_visibility();
+         update_graph_visibility("runtime");
   });
 </script>
