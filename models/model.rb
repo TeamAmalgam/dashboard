@@ -57,10 +57,10 @@ class Model < ActiveRecord::Base
     self.save!
   end
 
-  def run_test(test_type)
+  def run_test(test_type, commit = nil)
     raise "No model uploaded." unless self.s3_key
 
-    commit = Repo.instance.head
+    commit ||= Repo.instance.head
 
     test_result = self.test_results.create(:requested_at => DateTime.now,
                                            :test_type => test_type,
