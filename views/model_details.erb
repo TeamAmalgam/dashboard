@@ -94,7 +94,7 @@
 </table>
 
 <script>
-  test_run_data = <%= test_run_data_array(@model.test_results.where(:completed => true).order(:requested_at)) %>;
+  test_run_data = <%= test_run_data_array(@model.test_results.where(:completed => true, :test_type => TestResult::TestTypes::PERFORMANCE).order(:requested_at)) %>;
 
   $(document).ready(function() {
     var w = 900;
