@@ -25,6 +25,7 @@ Getting Started
 Deploying
 ---------
 The Amalgam Test Dashboard is run on top of Heroku.
+
 1. `git remote add heroku <HEROKU_GIT_REPO>`
 2. `heroku maintenance:on`
 3. `git push heroku master`
