@@ -74,7 +74,7 @@
       <% if t.commit.nil? %>
         <td>Unknown</td>
       <% else %>
-        <td><%= t.commit[0,7] %>...</td>
+        <td><%= t.commit.sha2_hash[0,7] %>...</td>
       <% end %>
 
       <% requested_at = t.requested_at ? t.requested_at.to_i : nil %>
@@ -94,7 +94,12 @@
 </table>
 
 <script>
-  test_run_data = <%= test_run_data_array(@model.test_results.where(:completed => true, :test_type => TestResult::TestTypes::PERFORMANCE).order(:requested_at)) %>;
+  <% test_results = @model.test_results.where(
+                        :completed => true,
+                        :correct => true,
+                        :test_type => TestResult::TestTypes::PERFORMANCE
+                    ).order(:requested_at) %>
+  test_run_data = <%= test_run_data_array(test_results) %>;
 
   $(document).ready(function() {
     var w = 900;
@@ -144,14 +149,6 @@
                       .scale(yscale)
                       .orient("left");
 
-    // Functions that draw graph lines.
-    var runtime_line = d3.svg.line()
-                     .x(function(d) { return xscale(d.datetime); })
-                     .y(function(d) { return yscale(d.runtime_seconds); });
-    var cpu_time_line = d3.svg.line()
-                      .x(function(d) { return xscale(d.datetime); })
-                      .y(function(d) { return yscale(d.cpu_time_seconds); });
-
     // Add the axes to the graph.
     graph.append("g")
          .classed("axis", true)
@@ -162,19 +159,6 @@
          .attr("transform", "translate(" + xpadding + ",0)")
          .call(yaxis);
    
-    // Draw the graph lines.
-    graph.append("g")
-         .classed("runtime_data", true)
-         .append("path")
-         .classed("connector", true)
-         .attr("d", runtime_line(runtime_data));
-
-    graph.append("g")
-         .classed("cpu_time_data", true)
-         .append("path")
-         .classed("connector", true)
-         .attr("d", cpu_time_line(cpu_time_data));
-
     // Draw the datapoints.
     graph.append("g")
          .classed("runtime_data", true)
