@@ -127,12 +127,20 @@ post "/repo/post_commit/#{settings.git_hook_secret}" do
   request.body.rewind  # in case someone already read it
   data = JSON.parse(params[:payload])
 
+  data[:commits].each do |commit|
+    if Commit.where(:sha2_hash => commit[:id]).first.nil?
+      Commit.create!(:sha2_hash => commit[:id],
+                     :time => commit[:timestamp])
+    end
+  end
+
   if data["ref"] == "refs/heads/master"
-    commit = data["after"]
+    commit_sha2 = data["after"]
     repo = Repo.instance
 
-    if commit != repo.head
-      repo.head = commit
+    if commit_sha2 != repo.commit.sha2_hash
+      head_commit = Commit.where(:sha2_hash => commit_sha2).first
+      repo.commit_id = head_commit.id
       repo.save!
 
       Model.where(:ci_enabled => true).all.each do |model|

@@ -74,7 +74,7 @@
       <% if t.commit.nil? %>
         <td>Unknown</td>
       <% else %>
-        <td><%= t.commit[0,7] %>...</td>
+        <td><%= t.commit.sha2_hash[0,7] %>...</td>
       <% end %>
 
       <% requested_at = t.requested_at ? t.requested_at.to_i : nil %>
