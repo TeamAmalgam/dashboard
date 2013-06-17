@@ -144,14 +144,6 @@
                       .scale(yscale)
                       .orient("left");
 
-    // Functions that draw graph lines.
-    var runtime_line = d3.svg.line()
-                     .x(function(d) { return xscale(d.datetime); })
-                     .y(function(d) { return yscale(d.runtime_seconds); });
-    var cpu_time_line = d3.svg.line()
-                      .x(function(d) { return xscale(d.datetime); })
-                      .y(function(d) { return yscale(d.cpu_time_seconds); });
-
     // Add the axes to the graph.
     graph.append("g")
          .classed("axis", true)
@@ -162,19 +154,6 @@
          .attr("transform", "translate(" + xpadding + ",0)")
          .call(yaxis);
    
-    // Draw the graph lines.
-    graph.append("g")
-         .classed("runtime_data", true)
-         .append("path")
-         .classed("connector", true)
-         .attr("d", runtime_line(runtime_data));
-
-    graph.append("g")
-         .classed("cpu_time_data", true)
-         .append("path")
-         .classed("connector", true)
-         .attr("d", cpu_time_line(cpu_time_data));
-
     // Draw the datapoints.
     graph.append("g")
          .classed("runtime_data", true)
