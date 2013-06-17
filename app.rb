@@ -127,10 +127,10 @@ post "/repo/post_commit/#{settings.git_hook_secret}" do
   request.body.rewind  # in case someone already read it
   data = JSON.parse(params[:payload])
 
-  data[:commits].each do |commit|
-    if Commit.where(:sha2_hash => commit[:id]).first.nil?
-      Commit.create!(:sha2_hash => commit[:id],
-                     :time => commit[:timestamp])
+  data["commits"].each do |commit|
+    if Commit.where(:sha2_hash => commit["id"]).first.nil?
+      Commit.create!(:sha2_hash => commit["id"],
+                     :time => commit["timestamp"])
     end
   end
 
