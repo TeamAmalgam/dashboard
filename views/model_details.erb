@@ -120,8 +120,8 @@
     // Determine the ranges of the axes.
     var xmin = d3.min(test_run_data, function(d) { return d.datetime; });
     var xmax = d3.max(test_run_data, function(d) { return d.datetime; });
-    var ymin = d3.min(test_run_data, function(d) { return d.runtime_seconds; });
-    var ymax = d3.max(test_run_data, function(d) { return d.runtime_seconds; });
+    var ymin = d3.min(test_run_data, function(d) { return Math.min(d.runtime_seconds, d.cpu_time_seconds); });
+    var ymax = d3.max(test_run_data, function(d) { return Math.max(d.runtime_seconds, d.cpu_time_seconds); });
 
     // Define scaling functions for the axes.
     var xscale = d3.scale.linear()
