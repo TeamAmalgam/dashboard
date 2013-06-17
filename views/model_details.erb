@@ -98,7 +98,7 @@
                         :completed => true,
                         :correct => true,
                         :test_type => TestResult::TestTypes::PERFORMANCE
-                    ).order(:requested_at) %>
+                    ).where('commit_id IS NOT NULL').order(:requested_at) %>
   test_run_data = <%= test_run_data_array(test_results) %>;
 
   $(document).ready(function() {
