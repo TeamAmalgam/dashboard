@@ -1,3 +1,5 @@
+require_relative 'test_result'
+
 class Model < ActiveRecord::Base
   JOB_DESCRIPTION_VERSION = 1
 
@@ -13,6 +15,11 @@ class Model < ActiveRecord::Base
   has_one :last_correct_test, :class_name => "TestResult",
                               :order => "requested_at DESC",
                               :conditions => {:completed => true, :correct => true}
+  has_one :last_correct_perf_test, :class_name => "TestResult",
+                                   :order => "requested_at DESC",
+                                   :conditions => {:completed => true,
+                                                   :correct => true,
+                                                   :test_type => TestResult::TestTypes::PERFORMANCE }
 
   cattr_accessor :s3_bucket
   cattr_accessor :performance_queue
