@@ -37,3 +37,4 @@ Useful Rake Tasks
 * `rake console`
 * `rake db:create_migration NAME=<NAME>`
 * `rake model:create`
+* `rake test_result:dump`

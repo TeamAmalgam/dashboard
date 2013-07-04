@@ -16,6 +16,53 @@ namespace :model do
 
 end
 
+namespace :test_result do
+
+  desc "Dumps out all the (completed and correct) test results in CSV format"
+  task :dump do
+    # Temporarily disable the logger
+    old_logger = ActiveRecord::Base.logger
+    ActiveRecord::Base.logger = nil
+
+    puts "\"ID\",\"Model\",\"Test Type\",\"Commit\",\"Commit Time\",\"Requested At\",\"Started At\",\"Real Time (s)\",\"CPU Time (s)\"" 
+    TestResult.where(:completed => true)
+              .where(:correct => true)
+              .includes(:model)
+              .includes(:commit)
+              .find_each do |t|
+      test_type = case t.test_type
+                  when TestResult::TestTypes::PERFORMANCE
+                    "Performance"
+                  when TestResult::TestTypes::CORRECTNESS
+                    "Correctness"
+                  when TestResult::TestTypes::CONTINUOUS_INTEGRATION
+                    "CI"
+                  else
+                    "Unknown"
+                  end
+      commit = t.commit.nil? ? "Unknown" : t.commit.sha2_hash
+      commit_time = t.commit.nil? ? "Unknown" : t.commit.time
+
+      entry = [t.id,
+               t.model.friendly_name,
+               test_type,
+               commit,
+               commit_time,
+               t.requested_at,
+               t.started_at,
+               t.runtime_seconds,
+               t.cpu_time_seconds
+               ].map{|a| "\"#{a}\""}
+                .join(",")
+      puts entry
+    end
+
+    # Enable logger
+    ActiveRecord::Base.logger = old_logger
+  end
+
+end
+
 desc "Opens a console that loads the Sinatra environment"
 task :console do
   exec 'bundle exec tux' if settings.development?
