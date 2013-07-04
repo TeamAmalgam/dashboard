@@ -101,10 +101,12 @@ helpers do
   end
 
   def number_pending_models
-    Model.includes(:last_test).all
-      .map(&:last_test)
-      .select{|t| !t.nil? && t.pending?}
-      .count
+    [Model.performance_queue,
+     Model.correctness_queue,
+     Model.ci_queue].reject{|a| a.nil? }.inject(0) do |total, item|
+
+      total + item.approximate_number_of_messages
+    end
   end
 
   def number_failing_models
