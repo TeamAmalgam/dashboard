@@ -14,6 +14,10 @@ helpers do
     @auth.provided? && @auth.basic? && @auth.credentials && @auth.credentials == [username, password]
   end
 
+  def h(text)
+    Rack::Utils.escape_html(text)
+  end
+
   def pretty_timestamp(timestamp)
     return nil if timestamp.nil?
 
@@ -36,12 +40,12 @@ helpers do
     string = '<i data-toggle="tooltip" data-placement="left" class="'
     string +=
       if test_result.pending? then
-        'icon-question-sign" title="Pending"></i>'
+        'icon-question-sign" title="Pending">&nbsp;</i>'
       elsif test_result.correct? then
-        'icon-ok" title="Correct"></i>'
+        'icon-ok" title="Correct">&nbsp;</i>'
       else
-        'icon-remove" title="Failed"></i>'
-    end
+        'icon-remove" title="Failed">&nbsp;</i>'
+      end
   end
 
   def test_result_row_class(test_result)
@@ -79,14 +83,14 @@ helpers do
     return if test_result.nil?
 
     s3_link = test_result.tarball_s3_link
-    s3_link.nil? ? "&nbsp;" : "<a href='#{s3_link}'>link</a>"
+    s3_link.nil? ? "&nbsp;" : "<a href='#{h s3_link}'>link</a>"
   end
 
   def model_s3_link model
     return if model.nil?
 
     s3_link = model.s3_link
-    s3_link.nil? ? "&nbsp;" : "<a href='#{s3_link}'>link</a>"
+    s3_link.nil? ? "&nbsp;" : "<a href='#{h s3_link}'>link</a>"
   end
 
   # Sums the duration of all the most recent completed models
