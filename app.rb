@@ -42,6 +42,7 @@ sqs = AWS::SQS.new
 Model.performance_queue = sqs.queues.named(settings.performance_sqs_queue)
 Model.correctness_queue = sqs.queues.named(settings.correctness_sqs_queue)
 Model.ci_queue = sqs.queues.named(settings.ci_sqs_queue)
+Build.build_queue = sqs.queues.named(settings.build_sqs_queue)
 
 s3 = AWS::S3.new
 Model.s3_bucket = s3.buckets[settings.s3_bucket]
