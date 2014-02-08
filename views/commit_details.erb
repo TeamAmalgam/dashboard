@@ -1,0 +1,39 @@
+<h1>Commit: <%= @commit.sha2_hash %></h1>
+<table class="table">
+  <tr>
+    <td style="width:15%"><strong>Comment</strong></td>
+    <td><%= @commit.comment %></td>
+  </tr>
+</table>
+
+<h3>Builds</h3>
+<table id="builds" class="table table-hover table-condensed">
+  <thead>
+    <tr>
+      <th>&nbsp;</th>
+      <th>Job ID</th>
+      <th>Requested At</th>
+      <th>Started At</th>
+      <th>Finished At</th>
+      <th>Return Code</th>
+      <th>Jar Link</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  <% @builds.each do |b| %>
+    <tr class="<%= build_row_class b %>">
+      <td>
+        <%= build_icon b %>
+      </td>
+      <td><%= b.job_id %></td>
+      <td><%= pretty_timestamp b.job.requested_at %></td>
+      <td><%= pretty_timestamp b.job.start_time %></td>
+      <td><%= pretty_timestamp b.job.complete_time %></td>
+      <td><%= b.job.return_code %></td>
+      <td><%= build_s3_link b %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+

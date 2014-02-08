@@ -170,4 +170,55 @@ helpers do
     return "Waiting for job." if worker.test_result.nil?
     return "Running #{worker.test_result.model.friendly_name}"
   end
+
+  def commit_status_icon(commit)
+    return nil if commit.nil?
+
+    string = '<i data-toggle="tooltip" data-placement="left" class="'
+    string += 
+      if commit.last_build.nil? || commit.last_build.return_code.nil? then
+        'icon-question-sign" title="No Build"></i>'
+      elsif commit.last_build.return_code == 0
+        'icon-ok" title="OK"></i>'
+      else
+        'icon-remove" title="Failed"></i>'
+      end
+  end
+
+  def commit_status_row_class(commit)
+    return nil if commit.nil?
+
+    return "warning" if commit.last_build.nil? || commit.last_build.return_code.nil?
+    return "success" if commit.last_build.return_code == 0
+    "error"
+  end
+
+  def build_icon(build)
+    return nil if build.nil?
+
+    string = '<i data-toggle="tooltip" data-placement="left" class="'
+    string += 
+      if build.return_code.nil?
+        'icon-question-sign" title="No Results"></i>'
+      elsif build.return_code == 0
+        'icon-ok" title="OK"></i>'
+      else
+        'icon-remove" title="Failed"></i>'
+      end
+  end
+
+  def build_row_class(build)
+    return nil if build.nil?
+
+    return "warning" if build.return_code.nil?
+    return "success" if build.return_code == 0
+    "error"
+  end
+
+  def build_s3_link(build)
+    return nil if build.nil?
+
+    s3_link = build.s3_link
+    s3_link.nil? ? "&nbsp;" : "<a href='#{h s3_link}'>link</a>"
+  end
 end

@@ -1,0 +1,19 @@
+<table id="commits" class="table table-hover table-condensed">
+  <thead>
+    <tr>
+      <th class="status-col">&nbsp;</th>
+      <th>Comment</th>
+      <th>SHA2</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% @commits.each do |commit| %>
+    <tr class="<%= commit_status_row_class commit %>">
+      <td><%= commit_status_icon commit %></td>
+      <td><a href="/commits/<%= commit.id %>"><%= commit.comment || "N/A" %></a></td>
+      <td><%= commit.sha2_hash %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+

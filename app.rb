@@ -15,6 +15,7 @@ require_relative "models/init"
 # Configure settings from environment variables.
 set :aws_access_key_id, ENV['AWS_ACCESS_KEY_ID']
 set :aws_secret_access_key, ENV['AWS_SECRET_ACCESS_KEY']
+set :build_sqs_queue, ENV['BUILD_SQS_QUEUE']
 set :performance_sqs_queue, ENV['PERFORMANCE_SQS_QUEUE']
 set :correctness_sqs_queue, ENV['CORRECTNESS_SQS_QUEUE']
 set :ci_sqs_queue, ENV['CI_SQS_QUEUE']
@@ -45,6 +46,7 @@ Model.ci_queue = sqs.queues.named(settings.ci_sqs_queue)
 s3 = AWS::S3.new
 Model.s3_bucket = s3.buckets[settings.s3_bucket]
 TestResult.s3_bucket = s3.buckets[settings.s3_bucket]
+Build.s3_bucket = s3.buckets[settings.s3_bucket]
 
 unless settings.hipchat_access_key.nil? || settings.hipchat_room.nil?
   TestResult.hipchat_client = HipChat::Client.new(settings.hipchat_access_key)
@@ -130,7 +132,8 @@ post "/repo/post_commit/#{settings.git_hook_secret}" do
   data["commits"].each do |commit|
     if Commit.where(:sha2_hash => commit["id"]).first.nil?
       Commit.create!(:sha2_hash => commit["id"],
-                     :time => commit["timestamp"])
+                     :time => commit["timestamp"],
+                     :comment => commit["message"])
     end
   end
 
@@ -235,4 +238,18 @@ post "/workers/:id/unregister" do
   worker = Worker.where(:id => params[:id]).first
   Worker.notify_hipchat!(worker.id, worker.hostname, "unregistered")
   worker.delete
+end
+
+get "/commits" do
+  @commits = Commit.order("time").all
+  @title = "Commits"
+
+  erb :commits_list
+end
+
+get "/commits/:id" do
+  @commit = Commit.where(:id => params[:id]).first
+  @builds = @commit.builds.includes(:job)
+
+  erb :commit_details
 end

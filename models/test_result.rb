@@ -2,6 +2,7 @@ class TestResult < ActiveRecord::Base
   belongs_to :model
   has_one :worker
   belongs_to :commit
+  belongs_to :job
 
   module TestTypes
     CORRECTNESS = 0
