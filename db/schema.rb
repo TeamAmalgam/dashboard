@@ -10,14 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140207232808) do
-
-  create_table "builds", :force => true do |t|
-    t.integer  "commit_id"
-    t.integer  "job_id"
-    t.string   "jar_s3_key"
-    t.datetime "requested_at"
-  end
+ActiveRecord::Schema.define(:version => 20140209024553) do
 
   create_table "commits", :force => true do |t|
     t.string   "sha2_hash", :null => false
@@ -26,10 +19,19 @@ ActiveRecord::Schema.define(:version => 20140207232808) do
   end
 
   create_table "jobs", :force => true do |t|
-    t.integer  "return_code"
+    t.string   "type"
     t.datetime "requested_at"
-    t.datetime "start_time"
-    t.datetime "complete_time"
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.integer  "return_code"
+    t.string   "secret_key"
+    t.integer  "commit_id"
+    t.string   "result_s3_key"
+    t.boolean  "correct"
+    t.integer  "test_type"
+    t.integer  "model_id"
+    t.integer  "cpu_time_seconds"
+    t.integer  "real_time_seconds"
   end
 
   create_table "models", :force => true do |t|
@@ -43,24 +45,6 @@ ActiveRecord::Schema.define(:version => 20140207232808) do
     t.datetime "updated_at", :null => false
     t.integer  "commit_id"
   end
-
-  create_table "test_results", :force => true do |t|
-    t.integer  "model_id"
-    t.integer  "test_type"
-    t.boolean  "completed"
-    t.boolean  "correct"
-    t.integer  "return_code"
-    t.string   "tarball_s3_key"
-    t.integer  "runtime_seconds"
-    t.string   "secret_key"
-    t.datetime "requested_at"
-    t.datetime "started_at"
-    t.integer  "cpu_time_seconds"
-    t.integer  "commit_id"
-  end
-
-  add_index "test_results", ["model_id"], :name => "index_test_results_on_model_id"
-  add_index "test_results", ["requested_at"], :name => "index_test_results_on_requested_at"
 
   create_table "workers", :force => true do |t|
     t.string   "hostname"

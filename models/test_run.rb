@@ -1,66 +1,68 @@
-class TestResult < ActiveRecord::Base
+require_relative 'job'
+
+class TestRun < Job
   belongs_to :model
-  has_one :worker
-  belongs_to :commit
-  belongs_to :job
 
   module TestTypes
     CORRECTNESS = 0
-    PERFORMANCE = 1 
-    CONTINUOUS_INTEGRATION = 2
+    PERFORMANCE = 1
+    CI = 2
     VALID_TYPES = (0..2)
   end
 
-  validates_presence_of :requested_at
   validates_presence_of :test_type
   validates :test_type, :inclusion => { :in => TestTypes::VALID_TYPES }
-  validates :completed, :inclusion => { :in => [true, false] }
 
   cattr_accessor :hipchat_client
   cattr_accessor :hipchat_room
   cattr_accessor :s3_bucket
+  cattr_accessor :correctness_queue
+  cattr_accessor :performance_queue
+  cattr_accessor :ci_queue
 
-  def completed?; self.completed; end
-  def pending?;  !self.completed; end
+  def completed?; !self.return_code.nil?; end
+  def pending?; self.return_code.nil?; end
 
   def tarball_s3_link
-    return nil if self.tarball_s3_key.nil?
+    return nil if self.result_s3_key.nil?
 
-    obj = @@s3_bucket.objects[self.tarball_s3_key]
+    obj = @@s3_bucket.objects[self.result_s3_key]
     obj.url_for(:read, :secure => true, :expires => 24.hours.to_i)
   end
 
-  def test_completed(data)
-    # If the test has already completed, throw it away
+  def start
+    super
+  end
+
+  def finish(data)
     return if completed?
-
-    # If the secret_key does not match, throw it away
-    return unless data["secret_key"] == self.secret_key
-
-    logger.info "Received result for test #{self.id}, updating records."
-
+    
+    super(data)
+   
     correct = data["correct"] == 1
-    runtime_seconds = data["runtime_seconds"]
-    cpu_time_seconds = data["cpu_time_seconds"]
 
     self.update_attributes({
-      :completed => true,
-      :return_code => data["return_code"],
-      :correct => correct,
-      :started_at => Time.parse(data["started_at"]),
-      :runtime_seconds => runtime_seconds,
-      :cpu_time_seconds => cpu_time_seconds,
-      :tarball_s3_key => data["tarball_s3_key"]
+      :correct => (data["correct"] == 1),
+      :real_time_seconds => data["real_time_seconds"],
+      :cpu_time_seconds => data["cpu_time_seconds"],
     })
+  end
 
-    self.save
-
-    TestResult.notify_hipchat!(self.id, self.model.friendly_name, runtime_seconds, cpu_time_seconds, correct)
+  def queue
+    sqs_queue = case self.test_type
+                  when TestRun::TestTypes::CORRECTNESS then @@correctness_queue
+                  when TestRun::TestTypes::PERFORMANCE then @@performance_queue
+                  when TestRun::TestTypes::CONTINUOUS_INTEGRATION then @@ci_queue
+                end
+    super(sqs_queue, :run, { 
+      :jar_file_key => self.commit.last_good_build.result_s3_key,
+      :model_file_key => self.model.s3_key
+    })
   end
 
 private
 
-  def self.notify_hipchat!(id, name, total_seconds, total_cpu_seconds, correct)
+  def self.notify_hipchat(id, name, total_seconds, total_cpu_seconds, correct)
     client = @@hipchat_client
     room = @@hipchat_room
 
@@ -86,5 +88,4 @@ private
 
     client[room].send("Dashboard", message, :color => colour) unless client.nil? || room.nil?
   end
-
 end

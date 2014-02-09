@@ -11,8 +11,8 @@
   </thead>
   <tbody>
   <% @models.each do |model| %>
-    <% duration = model.last_correct_perf_test ? model.last_correct_perf_test.runtime_seconds : nil %>
-    <% duration ||= model.last_correct_test ? model.last_correct_test.runtime_seconds : nil %>
+    <% duration = model.last_correct_perf_test ? model.last_correct_perf_test.real_time_seconds : nil %>
+    <% duration ||= model.last_correct_test ? model.last_correct_test.real_time_seconds : nil %>
     <% cpu_time = model.last_correct_perf_test ? model.last_correct_perf_test.cpu_time_seconds : nil %>
     <% cpu_time ||= model.last_correct_test ? model.last_correct_test.cpu_time_seconds : nil %>
     <tr class="<%= test_result_row_class model.last_test %>" data-id="<%= model.id %>">

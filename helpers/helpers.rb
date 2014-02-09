@@ -68,11 +68,11 @@ helpers do
     return nil if test_result.nil?
 
     case test_result.test_type
-    when TestResult::TestTypes::PERFORMANCE
+    when TestRun::TestTypes::PERFORMANCE
       "Performance"
-    when TestResult::TestTypes::CORRECTNESS
+    when TestRun::TestTypes::CORRECTNESS
       "Correctness"
-    when TestResult::TestTypes::CONTINUOUS_INTEGRATION
+    when TestRun::TestTypes::CONTINUOUS_INTEGRATION
       "CI"
     else
       "Unknown"
@@ -100,7 +100,7 @@ helpers do
     Model.includes(:last_correct_perf_test).all
       .map(&:last_correct_perf_test)
       .reject{|t| t.nil?}
-      .map{|t| t.runtime_seconds}
+      .map{|t| t.real_time_seconds}
       .sum
   end
 
@@ -130,9 +130,9 @@ helpers do
         completed: #{result.completed? ? 1 : 0},
         correct: #{result.correct? ? 1 : 0},
         datetime: new Date("#{result.commit.time.to_datetime.to_s}"),
-        runtime_seconds: #{result.runtime_seconds || "null"},
+        real_time_seconds: #{result.real_time_seconds || "null"},
         cpu_time_seconds: #{result.cpu_time_seconds || "null"},
-        pretty_duration: "#{pretty_duration result.runtime_seconds}",
+        pretty_duration: "#{pretty_duration result.real_time_seconds}",
         pretty_cpu_time: "#{pretty_duration result.cpu_time_seconds}"
       }
       ENTRY

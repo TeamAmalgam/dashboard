@@ -1,4 +1,4 @@
-require_relative 'test_result'
+require_relative 'test_run'
 
 class Model < ActiveRecord::Base
   JOB_DESCRIPTION_VERSION = 1
@@ -6,20 +6,19 @@ class Model < ActiveRecord::Base
   validates_presence_of :filepath
   validate :ci_enabled_requires_model
 
-  has_many :test_results
-  has_one :last_test, :class_name => "TestResult",
+  has_many :test_runs
+  has_one :last_test, :class_name => "TestRun",
                       :order => "requested_at DESC"
-  has_one :last_completed_test, :class_name => "TestResult",
+  has_one :last_completed_test, :class_name => "TestRun",
                                 :order => "requested_at DESC",
-                                :conditions => {:completed => true}
-  has_one :last_correct_test, :class_name => "TestResult",
+                                :conditions => "return_code IS NOT NULL"
+  has_one :last_correct_test, :class_name => "TestRun",
                               :order => "requested_at DESC",
-                              :conditions => {:completed => true, :correct => true}
-  has_one :last_correct_perf_test, :class_name => "TestResult",
+                              :conditions => {:correct => true}
+  has_one :last_correct_perf_test, :class_name => "TestRun",
                                    :order => "requested_at DESC",
-                                   :conditions => {:completed => true,
-                                                   :correct => true,
-                                                   :test_type => TestResult::TestTypes::PERFORMANCE }
+                                   :conditions => {:correct => true,
+                                                   :test_type => TestRun::TestTypes::PERFORMANCE }
 
   cattr_accessor :s3_bucket
   cattr_accessor :performance_queue
@@ -74,27 +73,10 @@ class Model < ActiveRecord::Base
       commit = Commit.where(:sha2_hash => commit_hash).first
     end
 
-    test_result = self.test_results.create(:requested_at => DateTime.now,
-                                           :test_type => test_type,
-                                           :commit_id => commit.id,
-                                           :completed => false)
-    job_description = {
-      :version => JOB_DESCRIPTION_VERSION,
-      :test_id => test_result.id,
-      :commit => commit.sha2_hash,
-      :model_s3_key => self.s3_key,
-    }.to_yaml
+    test_run = self.test_runs.create!(:test_type => test_type,
+                                      :commit_id => commit.id)
 
-    queue = case test_type
-              when TestResult::TestTypes::CORRECTNESS then @@correctness_queue
-              when TestResult::TestTypes::PERFORMANCE then @@performance_queue
-              when TestResult::TestTypes::CONTINUOUS_INTEGRATION then @@ci_queue
-            end
-
-    sent_message = queue.send_message(job_description)
-
-    test_result.secret_key = sent_message.id
-    test_result.save
+    test_run.queue
   end
 
   private

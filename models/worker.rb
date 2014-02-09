@@ -11,9 +11,9 @@ class Worker < ActiveRecord::Base
     old_test_result_id = self.test_result_id
 
     if !test_result_id.nil?
-      test_result = TestResult.where(:id => test_result_id).first
+      test_result = TestRun.where(:id => test_result_id).first
 
-      raise "Unknown TestResult" if test_result.nil?
+      raise "Unknown TestRun" if test_result.nil?
       self.test_result = test_result
     else
       self.test_result = nil

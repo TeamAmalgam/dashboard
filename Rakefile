@@ -25,17 +25,16 @@ namespace :test_result do
     ActiveRecord::Base.logger = nil
 
     puts "\"ID\",\"Model\",\"Test Type\",\"Commit\",\"Commit Time\",\"Requested At\",\"Started At\",\"Real Time (s)\",\"CPU Time (s)\"" 
-    TestResult.where(:completed => true)
-              .where(:correct => true)
-              .includes(:model)
-              .includes(:commit)
-              .find_each do |t|
+    TestRun.where(:correct => true)
+           .includes(:model)
+           .includes(:commit)
+           .find_each do |t|
       test_type = case t.test_type
-                  when TestResult::TestTypes::PERFORMANCE
+                  when TestRun::TestTypes::PERFORMANCE
                     "Performance"
-                  when TestResult::TestTypes::CORRECTNESS
+                  when TestRun::TestTypes::CORRECTNESS
                     "Correctness"
-                  when TestResult::TestTypes::CONTINUOUS_INTEGRATION
+                  when TestRun::TestTypes::CONTINUOUS_INTEGRATION
                     "CI"
                   else
                     "Unknown"

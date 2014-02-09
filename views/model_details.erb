@@ -42,10 +42,10 @@
 
 <h3>Runtime Performance</h3>
 <div id="graph-data-filter" class="btn-group" data-toggle="buttons-radio">
-  <button id="runtime" type="button" class="btn active">Total</button>
+  <button id="real_time" type="button" class="btn active">Total</button>
   <button id="cpu_time" type="button" class="btn">CPU</button>
 </div>
-<div id="runtime-performance-graph" class="well">
+<div id="real_time-performance-graph" class="well">
 </div>
 
 <h3>Test Runs</h3>
@@ -64,7 +64,7 @@
     </tr>
   </thead>
 
-  <% @test_results.each do |t| %>
+  <% @test_runs.each do |t| %>
     <tr class="<%= test_result_row_class t %>" data-id="<%= t.id %>">
       <td data-test-result-type="<%= test_result_status_number t %>">
         <%= test_result_icon t %>
@@ -82,8 +82,8 @@
       <td data-test-time="<%= requested_at %>"><%= pretty_timestamp t.requested_at %></td>
       <td data-test-time="<%= started_at %>"><%= pretty_timestamp t.started_at %></td>
       <td><%= t.return_code %></td>
-      <td style="text-align:right;padding-right:10px" data-duration="<%= t.runtime_seconds %>">
-        <%= pretty_duration t.runtime_seconds %>
+      <td style="text-align:right;padding-right:10px" data-duration="<%= t.real_time_seconds %>">
+        <%= pretty_duration t.real_time_seconds %>
       </td>
       <td style="text-align:right;padding-right:10px" data-duration="<%= t.cpu_time_seconds %>">
         <%= pretty_duration t.cpu_time_seconds %>
@@ -94,10 +94,9 @@
 </table>
 
 <script>
-  <% test_results = @model.test_results.where(
-                        :completed => true,
+  <% test_results = @model.test_runs.where(
                         :correct => true,
-                        :test_type => TestResult::TestTypes::PERFORMANCE
+                        :test_type => TestRun::TestTypes::PERFORMANCE
                     ).where('commit_id IS NOT NULL').order(:requested_at) %>
   test_run_data = <%= test_run_data_array(test_results) %>;
 
@@ -107,8 +106,8 @@
     var xpadding = 50;
     var ypadding = 20;
 
-    var runtime_data = test_run_data.filter(function(element, index, array) {
-      return (element.runtime_seconds != null);
+    var real_time_data = test_run_data.filter(function(element, index, array) {
+      return (element.real_time_seconds != null);
     });
 
     var cpu_time_data = test_run_data.filter(function(element, index, array) {
@@ -116,7 +115,7 @@
     });
 
     // Create the graph svg.
-    var graph = d3.select("#runtime-performance-graph")
+    var graph = d3.select("#real_time-performance-graph")
                   .insert("svg")
                   .attr("class", "chart")
                   .attr("width", w)
@@ -125,8 +124,8 @@
     // Determine the ranges of the axes.
     var xmin = d3.min(test_run_data, function(d) { return d.datetime; });
     var xmax = d3.max(test_run_data, function(d) { return d.datetime; });
-    var ymin = d3.min(test_run_data, function(d) { return Math.min(d.runtime_seconds, d.cpu_time_seconds); });
-    var ymax = d3.max(test_run_data, function(d) { return Math.max(d.runtime_seconds, d.cpu_time_seconds); });
+    var ymin = d3.min(test_run_data, function(d) { return Math.min(d.real_time_seconds, d.cpu_time_seconds); });
+    var ymax = d3.max(test_run_data, function(d) { return Math.max(d.real_time_seconds, d.cpu_time_seconds); });
 
     // Define scaling functions for the axes.
     var xscale = d3.scale.linear()
@@ -161,16 +160,16 @@
    
     // Draw the datapoints.
     graph.append("g")
-         .classed("runtime_data", true)
+         .classed("real_time_data", true)
          .selectAll("circle")
-         .data(runtime_data)
+         .data(real_time_data)
          .enter()
          .append("circle")
          .attr("cx", function(d) {
            return xscale(d.datetime);
          })
          .attr("cy", function(d) {
-          return yscale(d.runtime_seconds);
+          return yscale(d.real_time_seconds);
          })
          .attr("r", 7.5)
          .attr("class", function(d) {
@@ -209,7 +208,7 @@
          });
 
          var update_graph_visibility = function(button_id) {
-           var show_runtime = (button_id == "runtime");
+           var show_real_time = (button_id == "real_time");
            var show_cpu_time = (button_id == "cpu_time");
 
            $("g.cpu_time_data").each(function () {
@@ -220,8 +219,8 @@
              }
            });
 
-           $("g.runtime_data").each(function () {
-             if(show_runtime) {
+           $("g.real_time_data").each(function () {
+             if(show_real_time) {
                $(this).show();
                } else {
                $(this).hide();
@@ -229,9 +228,9 @@
            });
          };
 
-         $("#graph-data-filter #runtime").click(update_graph_visibility.bind(undefined, "runtime"));
+         $("#graph-data-filter #real_time").click(update_graph_visibility.bind(undefined, "real_time"));
          $("#graph-data-filter #cpu_time").click(update_graph_visibility.bind(undefined, "cpu_time"));
 
-         update_graph_visibility("runtime");
+         update_graph_visibility("real_time");
   });
 </script>

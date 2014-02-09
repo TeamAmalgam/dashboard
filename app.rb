@@ -39,19 +39,19 @@ AWS.config(:access_key_id => settings.aws_access_key_id,
            :secret_access_key => settings.aws_secret_access_key)
 
 sqs = AWS::SQS.new
-Model.performance_queue = sqs.queues.named(settings.performance_sqs_queue)
-Model.correctness_queue = sqs.queues.named(settings.correctness_sqs_queue)
-Model.ci_queue = sqs.queues.named(settings.ci_sqs_queue)
+TestRun.performance_queue = sqs.queues.named(settings.performance_sqs_queue)
+TestRun.correctness_queue = sqs.queues.named(settings.correctness_sqs_queue)
+TestRun.ci_queue = sqs.queues.named(settings.ci_sqs_queue)
 Build.build_queue = sqs.queues.named(settings.build_sqs_queue)
 
 s3 = AWS::S3.new
 Model.s3_bucket = s3.buckets[settings.s3_bucket]
-TestResult.s3_bucket = s3.buckets[settings.s3_bucket]
+TestRun.s3_bucket = s3.buckets[settings.s3_bucket]
 Build.s3_bucket = s3.buckets[settings.s3_bucket]
 
 unless settings.hipchat_access_key.nil? || settings.hipchat_room.nil?
-  TestResult.hipchat_client = HipChat::Client.new(settings.hipchat_access_key)
-  TestResult.hipchat_room = settings.hipchat_room
+  TestRun.hipchat_client = HipChat::Client.new(settings.hipchat_access_key)
+  TestRun.hipchat_room = settings.hipchat_room
   Worker.hipchat_client = HipChat::Client.new(settings.hipchat_access_key)
   Worker.hipchat_room = settings.hipchat_room
 end
@@ -74,7 +74,7 @@ get "/models/:id" do
 
   halt 404, "404 - Page not found." if @model.nil?
 
-  @test_results = @model.test_results.order("requested_at DESC")
+  @test_runs = @model.test_runs.order("requested_at DESC")
 
   @title = "Amalgam Dashboard - Models - #{@model.friendly_name}"
   erb :"model_details"
@@ -100,30 +100,13 @@ post "/models/:id/run" do
   halt 404, "404 - Page not found." if @model.nil?
 
   test_type = case params[:test_type]
-                when "CORRECTNESS" then TestResult::TestTypes::CORRECTNESS
-                when "PERFORMANCE" then TestResult::TestTypes::PERFORMANCE
+                when "CORRECTNESS" then TestRun::TestTypes::CORRECTNESS
+                when "PERFORMANCE" then TestRun::TestTypes::PERFORMANCE
               end
 
   @model.run_test(test_type)
 
   redirect to('/models')
-end
-
-post "/result" do
-  protected! if settings.production?
-
-  request.body.rewind  # in case someone already read it
-  data = JSON.parse request.body.read
-
-  # Find the TestResult associated with the response
-  result = TestResult.where(:id => data["test_id"]).first
-
-  halt 400, "400 - Bad request: submitted test result does not exist" if result.nil?
-
-  # Pass the data to the model and let it handle the rest
-  result.test_completed data
-
-  "OK"
 end
 
 post "/repo/post_commit/#{settings.git_hook_secret}" do
@@ -132,23 +115,13 @@ post "/repo/post_commit/#{settings.git_hook_secret}" do
 
   data["commits"].each do |commit|
     if Commit.where(:sha2_hash => commit["id"]).first.nil?
-      Commit.create!(:sha2_hash => commit["id"],
-                     :time => commit["timestamp"],
-                     :comment => commit["message"])
-    end
-  end
+      commit_obj = Commit.create!(:sha2_hash => commit["id"],
+                                  :time => commit["timestamp"],
+                                  :comment => commit["message"])
 
-  if data["ref"] == "refs/heads/master"
-    commit_sha2 = data["after"]
-    repo = Repo.instance
-
-    if commit_sha2 != repo.commit.sha2_hash
-      head_commit = Commit.where(:sha2_hash => commit_sha2).first
-      repo.commit_id = head_commit.id
-      repo.save!
-
-      Model.where(:ci_enabled => true).all.each do |model|
-        model.run_test(TestResult::TestTypes::CONTINUOUS_INTEGRATION)
+      # If this commit has not been built, then request a build.
+      if commit_obj.last_build.nil?
+        commit_obj.request_build
       end
     end
   end
@@ -178,26 +151,6 @@ post "/workers/register" do
   {:worker_id => worker.id}.to_json
 end
 
-post "/workers/:id/start" do
-  protected! if settings.production?
-
-  request.body.rewind
-  data = JSON.parse request.body.read
-
-  worker = Worker.where(:id => params[:id]).first
-  test_result = TestResult.where(:id => data["test_id"]).first
-
-  halt 400, "400 - Bad request: worker does not exist" if worker.nil?
-  halt 400, "400 - Bad request: test result does not exist" if test_result.nil?
-
-  worker.heartbeat(Time.now, data["test_id"])
-
-  test_result.started_at = Time.now
-  test_result.save!
-
-  "OK"
-end
-
 post "/workers/:id/heartbeat" do
   protected! if settings.production?
 
@@ -209,26 +162,6 @@ post "/workers/:id/heartbeat" do
   halt 400, "400 - Bad request: worker does not exist" if worker.nil?
 
   worker.heartbeat(Time.now, data["test_id"])
-
-  "OK"
-end
-
-post "/workers/:id/result" do
-  protected! if settings.production?
-
-  request.body.rewind
-  data = JSON.parse request.body.read
-
-  worker = Worker.where(:id => params[:id]).first
-  result = TestResult.where(:id => data["test_id"]).first
-
-  halt 400, "400 - Bad request: worker does not exist" if worker.nil?
-  halt 400, "400 - Bad request: submitted test result does not exist" if result.nil?
-
-  worker.heartbeat(Time.now, nil)
-
-  # Pass the data to the model and let it handle the rest
-  result.test_completed data
 
   "OK"
 end
@@ -250,7 +183,43 @@ end
 
 get "/commits/:id" do
   @commit = Commit.where(:id => params[:id]).first
-  @builds = @commit.builds.includes(:job)
+  @builds = @commit.builds.order("requested_at DESC").all
 
   erb :commit_details
+end
+
+post "/commits/:id/build" do
+  protected! if settings.production?
+
+  puts "Running Build"
+
+  @commit = Commit.where(:id => params[:id]).first
+  
+  halt 400, "400 - No such commit." if @commit.nil?
+
+  @commit.request_build
+  
+  redirect to("/commits/#{@commit.id}")
+end
+
+post "/jobs/:id/start" do
+  protected! if settings.production?
+
+  @job = Job.where(:id => params[:id]).first
+
+  @job.start
+
+  "OK"
+end
+
+post "/jobs/:id/finish" do
+  protected! if settings.production?
+
+  @job = Job.where(:id => params[:id]).first
+  
+  data = JSON.parse request.body.read
+
+  @job.finish(data)
+
+  "OK"
 end
