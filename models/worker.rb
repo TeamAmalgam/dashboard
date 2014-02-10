@@ -1,6 +1,6 @@
 class Worker < ActiveRecord::Base
   validates_presence_of :hostname
-  belongs_to :test_result
+  belongs_to :job
 
   cattr_accessor :hipchat_client
   cattr_accessor :hipchat_room

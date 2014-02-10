@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140209024553) do
+ActiveRecord::Schema.define(:version => 20140210221507) do
 
   create_table "commits", :force => true do |t|
     t.string   "sha2_hash", :null => false
@@ -49,8 +49,8 @@ ActiveRecord::Schema.define(:version => 20140209024553) do
   create_table "workers", :force => true do |t|
     t.string   "hostname"
     t.datetime "last_heartbeat"
-    t.integer  "test_result_id"
     t.datetime "last_state_change_time"
+    t.integer  "job_id"
   end
 
 end
