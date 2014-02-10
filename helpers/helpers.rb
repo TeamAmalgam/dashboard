@@ -100,7 +100,7 @@ helpers do
     Model.includes(:last_correct_perf_test).all
       .map(&:last_correct_perf_test)
       .reject{|t| t.nil?}
-      .map{|t| t.real_time_seconds}
+      .map{|t| t.run_time_seconds}
       .sum
   end
 
@@ -130,9 +130,9 @@ helpers do
         completed: #{result.completed? ? 1 : 0},
         correct: #{result.correct? ? 1 : 0},
         datetime: new Date("#{result.commit.time.to_datetime.to_s}"),
-        real_time_seconds: #{result.real_time_seconds || "null"},
+        run_time_seconds: #{result.run_time_seconds || "null"},
         cpu_time_seconds: #{result.cpu_time_seconds || "null"},
-        pretty_duration: "#{pretty_duration result.real_time_seconds}",
+        pretty_duration: "#{pretty_duration result.run_time_seconds}",
         pretty_cpu_time: "#{pretty_duration result.cpu_time_seconds}"
       }
       ENTRY
@@ -167,8 +167,8 @@ helpers do
   def worker_state_message(worker)
     return nil if worker.nil?
 
-    return "Waiting for job." if worker.test_result.nil?
-    return "Running #{worker.test_result.model.friendly_name}"
+    return "Waiting for job." if worker.job.nil?
+    return "Running #{worker.job.model.friendly_name}"
   end
 
   def commit_status_icon(commit)

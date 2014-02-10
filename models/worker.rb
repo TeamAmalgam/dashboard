@@ -7,19 +7,19 @@ class Worker < ActiveRecord::Base
 
   before_create { |worker| worker.last_state_change_time = Time.now }
 
-  def heartbeat(time, test_result_id)
-    old_test_result_id = self.test_result_id
+  def heartbeat(time,job_id)
+    old_job_result_id = self.job_id
 
-    if !test_result_id.nil?
-      test_result = TestRun.where(:id => test_result_id).first
+    if !job_result_id.nil?
+      job = TestRun.where(:id => job_id).first
 
-      raise "Unknown TestRun" if test_result.nil?
-      self.test_result = test_result
+      raise "Unknown Job" if job.nil?
+      self.job = job
     else
-      self.test_result = nil
+      self.job = nil
     end
 
-    if old_test_result_id != self.test_result_id
+    if old_job_id != self.job_id
       self.last_state_change_time = time
     end
     
@@ -29,11 +29,11 @@ class Worker < ActiveRecord::Base
   end
 
   def self.running_count
-    self.where("test_result_id IS NOT NULL").count
+    self.where("job_id IS NOT NULL").count
   end
 
   def self.idle_count
-    self.where(:test_result_id => nil).count
+    self.where(:job_id => nil).count
   end
 
   def self.failing_count
