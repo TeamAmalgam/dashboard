@@ -7,11 +7,11 @@ class Worker < ActiveRecord::Base
 
   before_create { |worker| worker.last_state_change_time = Time.now }
 
-  def heartbeat(time,job_id)
-    old_job_result_id = self.job_id
+  def heartbeat(time, new_job_id)
+    old_job_id = self.job_id
 
-    if !job_result_id.nil?
-      job = TestRun.where(:id => job_id).first
+    if !new_job_id.nil?
+      job = Job.where(:id => new_job_id).first
 
       raise "Unknown Job" if job.nil?
       self.job = job
