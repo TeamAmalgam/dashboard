@@ -161,7 +161,7 @@ post "/workers/:id/heartbeat" do
 
   halt 400, "400 - Bad request: worker does not exist" if worker.nil?
 
-  worker.heartbeat(Time.now, data["test_id"])
+  worker.heartbeat(Time.now, data["job_id"])
 
   "OK"
 end
