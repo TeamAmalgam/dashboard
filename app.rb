@@ -175,7 +175,7 @@ post "/workers/:id/unregister" do
 end
 
 get "/commits" do
-  @commits = Commit.order("time").all
+  @commits = Commit.order("time DESC").all
   @title = "Commits"
 
   erb :commits_list
