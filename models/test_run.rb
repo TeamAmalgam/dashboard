@@ -55,6 +55,7 @@ class TestRun < Job
                   when TestRun::TestTypes::CONTINUOUS_INTEGRATION then @@ci_queue
                 end
     super(sqs_queue, :run, { 
+      :model_id => self.model_id,
       :jar_file_key => self.commit.last_good_build.result_s3_key,
       :model_file_key => self.model.s3_key
     })
