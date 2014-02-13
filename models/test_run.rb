@@ -6,7 +6,7 @@ class TestRun < Job
   module TestTypes
     CORRECTNESS = 0
     PERFORMANCE = 1
-    CI = 2
+    CONTINUOUS_INTEGRATION = 2
     VALID_TYPES = (0..2)
   end
 
