@@ -29,7 +29,6 @@ class TestRun < Job
 
   validates_presence_of :test_type
   validates :test_type, :inclusion => { :in => TestTypes::VALID_TYPES }
-  validates :algorithm, :inclusion => { :in => Algorithms::VALID_ALGORITHMS }
 
   cattr_accessor :hipchat_client
   cattr_accessor :hipchat_room
