@@ -10,8 +10,26 @@ class TestRun < Job
     VALID_TYPES = (0..2)
   end
 
+  module Algorithms
+    GIA = 0
+    IGIA = 1
+    CGIA = 2
+    PGIA = 3
+    OGIA = 4
+    VALID_ALGORITHMS = (0..4)
+  end
+
+  ALGORITHM_TO_NAME = {
+    Algorithms::GIA => 'GIA',
+    Algorithms::IGIA => 'IGIA',
+    Algorithms::CGIA => 'CGIA',
+    Algorithms::PGIA => 'PGIA',
+    Algorithms::OGIA => 'OGIA'
+  }
+
   validates_presence_of :test_type
   validates :test_type, :inclusion => { :in => TestTypes::VALID_TYPES }
+  validates :algorithm, :inclusion => { :in => Algorithms::VALID_ALGORITHMS }
 
   cattr_accessor :hipchat_client
   cattr_accessor :hipchat_room
@@ -57,7 +75,8 @@ class TestRun < Job
     super(sqs_queue, :run, { 
       :model_id => self.model_id,
       :jar_file_key => self.commit.last_good_build.result_s3_key,
-      :model_file_key => self.model.s3_key
+      :model_file_key => self.model.s3_key,
+      :algorithm => ALGORITHM_TO_NAME[self.algorithm]
     })
   end
 

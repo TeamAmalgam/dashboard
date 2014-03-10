@@ -54,6 +54,7 @@
     <tr>
       <th data-filter="false">&nbsp;</th>
       <th class="filter-select">Test Type</th>
+      <th class="filter-select">Algorithm</th>
       <th class="filter-select">Commit</th>
       <th data-filter="false">Requested At</th>
       <th data-filter="false">Started At</th>
@@ -70,6 +71,7 @@
         <%= test_result_icon t %>
       </td>
       <td><%= test_type t %></td>
+      <td><%= algorithm t %></td>
 
       <% if t.commit.nil? %>
         <td>Unknown</td>

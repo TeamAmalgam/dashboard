@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140210221507) do
+ActiveRecord::Schema.define(:version => 20140310201814) do
 
   create_table "commits", :force => true do |t|
     t.string   "sha2_hash", :null => false
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(:version => 20140210221507) do
     t.integer  "model_id"
     t.integer  "cpu_time_seconds"
     t.integer  "real_time_seconds"
+    t.integer  "algorithm"
   end
 
   create_table "models", :force => true do |t|

@@ -79,6 +79,15 @@ helpers do
     end
   end
 
+  def algorithm(test_result)
+    return nil if test_result.nil?
+
+    result = TestRun::ALGORITHM_TO_NAME[test_result.algorithm]
+    result ||= "Unknown"
+
+    return result
+  end
+
   def test_result_s3_link test_result
     return if test_result.nil?
 

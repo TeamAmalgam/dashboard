@@ -63,7 +63,7 @@ class Model < ActiveRecord::Base
     self.save!
   end
 
-  def run_test(test_type, commit_hash = nil)
+  def run_test(test_type, commit_hash = nil, algorithm = TestRun::Algorithms::GIA)
     raise "No model uploaded." unless self.s3_key
 
     commit = nil
@@ -74,7 +74,8 @@ class Model < ActiveRecord::Base
     end
 
     test_run = self.test_runs.create!(:test_type => test_type,
-                                      :commit_id => commit.id)
+                                      :commit_id => commit.id,
+                                      :algorithm => algorithm)
 
     test_run.queue
   end
