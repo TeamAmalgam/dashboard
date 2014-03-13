@@ -177,7 +177,12 @@ helpers do
     return nil if worker.nil?
 
     return "Waiting for job." if worker.job.nil?
-    return "Running #{worker.job.model.friendly_name}"
+
+    unless worker.job.model.nil?
+      return "Running #{worker.job.model.friendly_name}"
+    end
+
+    return "Working"
   end
 
   def commit_status_icon(commit)
