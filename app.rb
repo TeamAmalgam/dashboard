@@ -202,6 +202,20 @@ post "/commits/:id/build" do
   redirect to("/commits/#{@commit.id}")
 end
 
+get "/commits/:id/download" do
+  protected! if settings.production?
+
+  @commit = Commit.where(:id => params[:id]).first
+
+  halt 400, "400 - No such commit." if @commit.nil?
+
+  @last_good_build = @commit.last_good_build
+
+  halt 400, "400 - No good build." if @last_good_build.nil?
+
+  redirect @last_good_build.s3_link
+end
+
 post "/jobs/:id/start" do
   protected! if settings.production?
 

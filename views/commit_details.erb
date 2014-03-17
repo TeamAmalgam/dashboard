@@ -15,7 +15,7 @@
       <% if last_good_build.nil? %>
         No Good Build
       <% else %>
-        <a href="<%= last_good_build.s3_link %>">Download</a>
+        <a href="/commits/<%= @commit.id %>/download">Download</a>
       <% end %>
     </td>
   </tr>
